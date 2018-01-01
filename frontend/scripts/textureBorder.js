@@ -121,7 +121,7 @@ function TextureBorder(boundValue, imageSrc, glObject, borderShaderInfo) {
     this.draw = function (perspectiveMatrix) {
 
         if(!isImageReady){
-            console.log("ssss");
+            console.log("Image is not ready.");
             return;
         }
 

@@ -263,5 +263,13 @@ function main() {
   document.onmousemove = onMouseMove
 }
 
+
+
+function Scene() {
+
+}
+
+
+
 window.onload = main
 
