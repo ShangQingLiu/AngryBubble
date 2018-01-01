@@ -4,16 +4,33 @@ function radians(t){
 
 var isImageReady = false;
 
-function TextureBound(bound, imageSrc, glObject) {
+//
+// const programInfo = {
+//     program: shaderProgram,
+//     attribLocations: {
+//         vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition')
+//     },
+//     uniformLocations: {
+//         projectionMatrix: gl.getUniformLocation(
+//             shaderProgram,
+//             'uProjectionMatrix'
+//         ),
+//         modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix')
+//     }
+// }
+
+
+
+function TextureBorder(boundValue, imageSrc, glObject, borderShaderInfo) {
     this.vertexNum = 0;
     this.gl = glObject;
     this.positionData = null;
     this.coordsData = null;
-    this.vsMvpMatrix = glObject.getUniformLocation(glObject.program, 'vsMvpMatrix');
-    this.fsKa = glObject.getUniformLocation(glObject.program, 'fsKa');
-    this.fsSampler = glObject.getUniformLocation(glObject.program, 'fsSampler');
-    this.vsPosition = glObject.getAttribLocation(glObject.program, 'vsPosition');
-    this.vsTexCoord  = glObject.getAttribLocation(glObject.program, 'vsTexCoord');
+    this.vsMvpMatrix = glObject.getUniformLocation(borderShaderInfo.program, 'vsMvpMatrix');
+    this.fsKa = glObject.getUniformLocation(borderShaderInfo.program, 'fsKa');
+    this.fsSampler = glObject.getUniformLocation(borderShaderInfo.program, 'fsSampler');
+    this.vsPosition = glObject.getAttribLocation(borderShaderInfo.program, 'vsPosition');
+    this.vsTexCoord  = glObject.getAttribLocation(borderShaderInfo.program, 'vsTexCoord');
     this.image = new Image();
     this.positionBufferHandle = null;
     this.coordsBufferHandle = null;
@@ -22,7 +39,7 @@ function TextureBound(bound, imageSrc, glObject) {
     this.coordsBufferHandle = glObject.createBuffer();
     this.textureHandle = glObject.createTexture();
 
-    var radius = bound;
+    var radius = boundValue;
     var slice = 10;
     var positionArray = new Array();
     var coordsArray = new Array();
@@ -101,14 +118,14 @@ function TextureBound(bound, imageSrc, glObject) {
     this.positionData =new Float32Array(positionArray);
     this.coordsData =new Float32Array(coordsArray);
     this.vertexNum = positionArray.length / 3;
-    this.draw = function (eyeMatrix) {
+    this.draw = function (perspectiveMatrix) {
 
         if(!isImageReady){
             console.log("ssss");
             return;
         }
 
-        var mvpMatrix = new Matrix4(eyeMatrix);
+        var mvpMatrix = new Matrix4(perspectiveMatrix);
         var gl = this.gl;
         gl.uniformMatrix4fv(this.vsMvpMatrix, false, mvpMatrix.elements);
 
@@ -144,7 +161,7 @@ function TextureBound(bound, imageSrc, glObject) {
         // Set the texture unit 0 to the sampler
         gl.uniform1i(this.fsSampler, 0);
 
-
+        gl.useProgram(borderShaderInfo.program);
 
 
         gl.drawArrays(gl.TRIANGLES, 0, this.vertexNum);
