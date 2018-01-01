@@ -5,6 +5,8 @@ let currentUser
 
 document.querySelector('#input').addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
+    console.log('hide')
+    document.getElementById('login').style.visibility = 'hidden'
     socket.emit('enter', event.target.value)
     event.target.value = ''
   }
