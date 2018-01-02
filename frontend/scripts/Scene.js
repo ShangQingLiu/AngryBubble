@@ -6,24 +6,25 @@ function UserInfo(_id) {
     this.id = _id;
     this.name = _id;
     this.pos = {
-        x: Math.random(),
-        y: Math.random(),
-        z: Math.random()
+        x: Math.random()*10,
+        y: Math.random()*10,
+        z: Math.random()*10
     };
-    this.size = Math.random()
+    this.radius = Math.random()*3;
 }
 
 let balls = [];
 
 
-for(var i = 1000; i != 1005; ++i){
+for(var i = 0; i != 5; ++i){
     users.push(new UserInfo(i));
 }
 
 let currentUser = users[0];
-currentUser.pos.x = 0;
-currentUser.pos.y = 0;
-currentUser.pos.z = 0;
+currentUser.size = 5;
+currentUser.pos.x = 5;
+currentUser.pos.y = 5;
+currentUser.pos.z = 5;
 
 
 
@@ -65,14 +66,14 @@ precision mediump float;
 #endif
 
 uniform vec3 fsAmbientLight;
-uniform vec3 fsKa;
+uniform vec4 fsKa;
 
 varying vec4 vertexPosition;
 varying vec3 normal;
 
 void main() {
-    vec3 ambient = fsAmbientLight * fsKa;
-    gl_FragColor = vec4(ambient, 1.0);
+    vec3 ambient = fsAmbientLight * vec3(fsKa);
+    gl_FragColor = vec4(ambient, fsKa.a);
 }
 `;
 const textureFsSource = `
@@ -169,41 +170,34 @@ function Scene(_canvas) {
     };
     this.gl = null;
     this.objects = [];
-    this.textureShaderInfo = null;
-    //var modelViewMatrix = mat4.create()
-    //mat4.translate(modelViewMatrix, modelViewMatrix, [0, 0, -6])
+    this.fsAmbientLight = null;
     var gl;
 
     this.draw = function () {
 
         if(users.length > balls.length){
-            for(let i = 0; i != users.length - balls.length; ++i){
-                // add balls
+            let deta = users.length - this.balls.length;
+            for(let i = 0; i != deta; ++i){
+                this.balls.push(new Ball(this.gl, this.shaderProgram, 4));
             }
         }
         for(let i = 0; i != users.length; ++i){
-            // balls[i].setPosition()  // set positions
-        }
 
-        if(this.gl == null ){
-            console.log("gl is null")
-            console.log(this)
-            //return;
+            this.balls[i].setPosition(users[i].pos.x,users[i].pos.y,users[i].pos.z );
+            this.balls[i].setRadius(users[i].radius);
         }
 
         var gl = this.gl;
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.enable(gl.DEPTH_TEST);
         setVpMatrix();
-        //console.log(vpMatrix)
+
         this.textureBorder.draw(vpMatrix);
         for(var i = 0; i != users.length; ++i){
-            //balls[i].draw(this.vpMatrix);
+            this.balls[i].draw(vpMatrix);
         }
 
     }
-
-    this.factor = 0.1;
 
     try {
         this.gl = _canvas.getContext('webgl');
@@ -222,36 +216,23 @@ function Scene(_canvas) {
         console.error(e)
     }
 
-    //const shaderProgram = initShaderProgram(vsSource, fsSource);
-    const textureShaderProgram = initShaderProgram(gl, textureVsSource, textureFsSource);
-    //this.shaderInfo = {
-    //    program: shaderProgram
-    //};
-    this.textureShaderInfo = {
-        program:textureShaderProgram
-    };
+    this.shaderProgram = initShaderProgram(gl,vsSource, fsSource);
+    this.textureShaderProgram = initShaderProgram(gl, textureVsSource, textureFsSource);
+    this.fsAmbientLight = gl.getUniformLocation(this.shaderProgram, 'fsAmbientLight');
+    gl.useProgram(this.shaderProgram);
+    gl.uniform3f(this.fsAmbientLight, 0.6, 0.6, 0.6);
 
-    const fieldOfView = 45 * Math.PI / 180; // in radians
+    //const fieldOfView = 45 * Math.PI / 180; // in radians
     const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     const zNear = 0.1;
-    const zFar = 2000.0;
+    const zFar = 1000.0;
 
     //perspectiveMatrix = new Matrix4();
-    perspectiveMatrix.perspective(fieldOfView, aspect, zNear, zFar);
+    perspectiveMatrix.perspective(45.0, aspect, zNear, zFar);
 
-    this.textureBorder = new TextureBorder(5,'./scripts/resources/earth.jpg',gl,this.textureShaderInfo.program );
+    this.textureBorder = new TextureBorder(100,'./scripts/resources/background.jpg',gl,this.textureShaderProgram);
     this.balls = [];
-
-    // let buffers = initBuffers(gl)
-    // tick()
-
-
-    //const perspectiveMatrix = new Matrix4();
-
-    // note: glmatrix.js always has the first argument
-    // as the destination to receive the result.
-    //mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar)
-
+    this.balls.push(new Ball(this.gl, this.shaderProgram, 4));
 
     this.canvas.onmousedown = onMouseDown
     document.onmouseup = onMouseUp
@@ -309,7 +290,7 @@ function onMouseMove(event) {
 }
 
 function setVpMatrix(){
-    let rotateRadius = 1000;
+    let rotateRadius = currentUser.size*4;
     let xzLength = -rotateRadius;
     let cameraPosition = [xzLength * Math.sin(degToRad(-xAngle)), rotateRadius * Math.sin(degToRad(-yAngle)), xzLength * Math.cos(degToRad(-xAngle))]
     let ballPosition = currentUser.pos;

@@ -212,7 +212,7 @@ function TextureBorder(bound, imageSrc, glObject, textureShaderProgram) {
     this.program = textureShaderProgram;
 
     var radius = bound;
-    var slice = 10;
+    var slice = 4;
     var positionArray = new Array();
     var coordsArray = new Array();
     var angleSpan = 45.0/slice;
@@ -293,7 +293,6 @@ function TextureBorder(bound, imageSrc, glObject, textureShaderProgram) {
     this.draw = function (vpMatrix) {
 
         if(!isImageReady){
-            console.log("ssss");
             return;
         }
 
@@ -302,7 +301,9 @@ function TextureBorder(bound, imageSrc, glObject, textureShaderProgram) {
         gl.useProgram(this.program);
         gl.uniformMatrix4fv(this.vsMvpMatrix, false, mvpMatrix.elements);
 
-        gl.uniform4f(this.fsKa,1.0 ,1.0 ,1.0,1.0 );
+        const light = 0.6;
+
+        gl.uniform4f(this.fsKa,light ,light,light,1.0 );
 
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBufferHandle);
@@ -342,21 +343,4 @@ function TextureBorder(bound, imageSrc, glObject, textureShaderProgram) {
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    console.log(this.coordsData);
-    console.log(this.positionData);
 }

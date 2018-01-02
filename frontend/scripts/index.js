@@ -71,7 +71,7 @@ function addBall(ballVal) {
   const ballGeometry = new THREE.SphereGeometry(1, 12, 12)
   const basicMtl = new THREE.MeshBasicMaterial({color: 0x00ff00, wireframe: true})
   const ball = new THREE.Mesh(ballGeometry, basicMtl)
-  ball.scale.set(ballVal.size, ballVal.size, ballVal.size)
+  ball.scale.set(ballVal.radius, ballVal.radius, ballVal.radius)
   ball.position.set(ballVal.pos.x, ballVal.pos.y, ballVal.pos.z)
   ball.name = ballVal.name
   scene.add(ball)
@@ -83,7 +83,7 @@ function renderUsers() {
   usersArea.innerHTML = ''
   users.forEach((val) => {
     const p = document.createElement('p')
-    p.innerHTML = `name: ${val.name}; pos: ${val.pos.x} ${val.pos.y} ${val.pos.z}; size: ${val.size}`
+    p.innerHTML = `name: ${val.name}; pos: ${val.pos.x} ${val.pos.y} ${val.pos.z}; size: ${val.radius}`
     usersArea.appendChild(p)
   })
 }

@@ -2,7 +2,7 @@ const WINDOW_WIDTH = 800
 const WINDOW_HEIGHT = 600
 
 const renderer = new THREE.WebGLRenderer({antialias: true})
-renderer.setSize(WINDOW_WIDTH, WINDOW_HEIGHT)
+renderer.setRadius(WINDOW_WIDTH, WINDOW_HEIGHT)
 document.querySelector('#main').appendChild(renderer.domElement)
 
 const scene = new THREE.Scene()
@@ -23,11 +23,11 @@ function drawObjects() {
 
   /*
   const ballGeometry = new THREE.SphereGeometry(1, 12, 12)
-  const ball = new THREE.Mesh(ballGeometry, basicMtl)
-  ball.scale.set(0.5, 0.5, 0.5)
-  ball.position.set(0, 0, 0)
-  ball.name = 'ball'
-  scene.add(ball)
+  const Ball = new THREE.Mesh(ballGeometry, basicMtl)
+  Ball.scale.set(0.5, 0.5, 0.5)
+  Ball.position.set(0, 0, 0)
+  Ball.name = 'Ball'
+  scene.add(Ball)
   */
   scene.add(cube1)
   scene.add(cube2)
@@ -48,7 +48,7 @@ function initCamera() {
   // camera.position.set(camera.position.x + 10, camera.position.y, camera.position.z)
   camera.up.set(0, 1, 0)
   camera.lookAt(new THREE.Vector3(0, 0, 0))
-  // camera.lookAt(scene.getObjectByName('ball').position)
+  // camera.lookAt(scene.getObjectByName('Ball').position)
   return camera
 }
 

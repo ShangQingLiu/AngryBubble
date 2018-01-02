@@ -123,7 +123,7 @@ function main() {
     // Create a perspective matrix, a special matrix that is
     // used to simulate the distortion of perspective in a camera.
     // Our field of view is 45 degrees, with a width/height
-    // ratio that matches the display size of the canvas
+    // ratio that matches the display radius of the canvas
     // and we only want to see objects between 0.1 units
     // and 100 units away from the camera.
 
