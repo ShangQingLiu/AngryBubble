@@ -17,13 +17,18 @@
 // }
 // `
 
-function main() {
-    var canvas = document.getElementById('canvas_1')
-    var gl
-    var lastMouseX = null
-    var lastMouseY = null
-    var mouseDown = false
 
+let users = []
+let currentUser
+
+
+function Scene(_canvas) {
+    this.canvas = _canvas;
+    this.gl = null;
+    this.lastMouseX = null
+    this.lastMouseY = null
+    this.mouseDown = false
+    this.objects = [];
     var modelViewMatrix = mat4.create()
     mat4.translate(modelViewMatrix, modelViewMatrix, [0, 0, -6])
 
@@ -263,6 +268,4 @@ function main() {
     document.onmousemove = onMouseMove
 }
 
-
-window.onload = main
 
