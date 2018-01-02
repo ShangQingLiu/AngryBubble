@@ -6,25 +6,25 @@ function UserInfo(_id) {
     this.id = _id;
     this.name = _id;
     this.pos = {
-        x: Math.random()*10,
-        y: Math.random()*10,
-        z: Math.random()*10
+        x: Math.random()*100 - 50,
+        y: Math.random()*100 - 50,
+        z: Math.random()*100 - 50
     };
-    this.radius = Math.random()*3;
+    this.radius = Math.random()*3 + 5;
 }
 
 let balls = [];
 
 
-for(var i = 0; i != 5; ++i){
+for(var i = 0; i != 10; ++i){
     users.push(new UserInfo(i));
 }
 
-let currentUser = users[0];
-currentUser.size = 5;
-currentUser.pos.x = 5;
-currentUser.pos.y = 5;
-currentUser.pos.z = 5;
+ let currentUser = users[0];
+// currentUser.radius = 5;
+// currentUser.pos.x = 5;
+// currentUser.pos.y = 5;
+// currentUser.pos.z = 5;
 
 
 
@@ -230,7 +230,7 @@ function Scene(_canvas) {
     //perspectiveMatrix = new Matrix4();
     perspectiveMatrix.perspective(45.0, aspect, zNear, zFar);
 
-    this.textureBorder = new TextureBorder(100,'./scripts/resources/background.jpg',gl,this.textureShaderProgram);
+    this.textureBorder = new TextureBorder(150,'./scripts/resources/background.jpg',gl,this.textureShaderProgram);
     this.balls = [];
     this.balls.push(new Ball(this.gl, this.shaderProgram, 4));
 
@@ -259,9 +259,7 @@ function onMouseUp(event) {
 
 function onMouseMove(event) {
 
-    const rotateRadius = 10;
-    const [rotateCenterX, rotateCenterY, rotateCenterZ] = [0, 0, 0];
-    const factor = 0.1;
+    const factor = 0.3;
 
     var newX = event.clientX;
     var newY = event.clientY;
@@ -290,7 +288,7 @@ function onMouseMove(event) {
 }
 
 function setVpMatrix(){
-    let rotateRadius = currentUser.size*4;
+    let rotateRadius = currentUser.radius*6;
     let xzLength = -rotateRadius;
     let cameraPosition = [xzLength * Math.sin(degToRad(-xAngle)), rotateRadius * Math.sin(degToRad(-yAngle)), xzLength * Math.cos(degToRad(-xAngle))]
     let ballPosition = currentUser.pos;
