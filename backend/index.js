@@ -3,6 +3,7 @@ const app = express()
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
 const path = require('path')
+const ballConfig = require('./config.json')
 
 app.use(express.static(path.resolve(__dirname + '/../frontend')))
 
@@ -24,7 +25,7 @@ io.on('connection', socket => {
         y: Math.random(),
         z: Math.random()
       },
-      size: Math.random()
+      size: ballConfig.initSize
     }
     let index
     if ((index = users.findIndex((val) => val.id === newUser.id)) !== -1)
