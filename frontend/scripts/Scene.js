@@ -1,4 +1,44 @@
-// import { mat4 } from 'gl-matrix'
+
+
+
+let users = [];
+function UserInfo(_id) {
+    this.id = _id;
+    this.name = _id;
+    this.pos = {
+        x: Math.random(),
+        y: Math.random(),
+        z: Math.random()
+    };
+    this.size = Math.random()
+}
+
+let balls = [];
+
+
+for(var i = 1000; i != 1005; ++i){
+    users.push(new UserInfo(i));
+}
+
+let currentUser = users[0];
+currentUser.pos.x = 0;
+currentUser.pos.y = 0;
+currentUser.pos.z = 0;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const vsSource = `
 attribute vec3 vsPosition;
@@ -68,34 +108,6 @@ void main() {
 }
 `;
 
-
-
-
-let users = [];
-function UserInfo(_id) {
-    this.id = _id;
-    this.name = _id;
-    this.pos = {
-        x: Math.random(),
-        y: Math.random(),
-        z: Math.random()
-    };
-    this.size = Math.random()
-}
-
-let balls = [];
-
-
-for(var i = 1000; i != 1005; ++i){
-    users.push(new UserInfo(i));
-}
-
-let currentUser = users[0];
-currentUser.pos.x = 0;
-currentUser.pos.y = 0;
-currentUser.pos.z = 0;
-
-
 let perspectiveMatrix = new Matrix4();
 let vpMatrix = new Matrix4();
 
@@ -150,7 +162,6 @@ let sceneInitReady = false;
 
 
 function Scene(_canvas) {
-    console.log(_canvas)
     this.canvas = _canvas;
     if(!this.canvas){
         console.log("Failed to get canvas");
@@ -271,9 +282,6 @@ function onMouseMove(event) {
     const [rotateCenterX, rotateCenterY, rotateCenterZ] = [0, 0, 0];
     const factor = 0.1;
 
-    // if (!mouseDown) {
-    //     return;
-    // }
     var newX = event.clientX;
     var newY = event.clientY;
 
@@ -286,21 +294,13 @@ function onMouseMove(event) {
     var deltaX = newX - lastMouseX;
     var deltaY = newY - lastMouseY;
 
-    //var newRotationMatrix = new Matrix4();
 
     xAngle += deltaX * factor;
     yAngle += deltaY * factor;
 
-    //mat4.rotate(newRotationMatrix, newRotationMatrix, degToRad(this.xAngle), [0, 1, 0]);
-    //mat4.rotate(newRotationMatrix, newRotationMatrix, degToRad(this.yAngle), [1, 0, 0]);
-    //newRotationMatrix.rotate(degToRad(this.xAngle), 0, 1, 0);
-    //newRotationMatrix.rotate(degToRad(this.yAngle), 1, 0, 0);
     setVpMatrix();
 
-    // mat4.translate(newRotationMatrix, newRotationMatrix, ballPosition)
-    // mat4.translate(newRotationMatrix, newRotationMatrix, cameraPosition)
 
-    //this.modelViewMatrix = newRotationMatrix
 
     lastMouseX = newX;
     lastMouseY = newY;
@@ -313,10 +313,7 @@ function setVpMatrix(){
     let xzLength = -rotateRadius;
     let cameraPosition = [xzLength * Math.sin(degToRad(-xAngle)), rotateRadius * Math.sin(degToRad(-yAngle)), xzLength * Math.cos(degToRad(-xAngle))]
     let ballPosition = currentUser.pos;
-    console.log(cameraPosition)
     vpMatrix.set(perspectiveMatrix);
     vpMatrix.lookAt(cameraPosition[0],cameraPosition[1],cameraPosition[2],ballPosition.x,ballPosition.y,ballPosition.z, 0, 1, 0);
-    //console.log(vpMatrix)
 }
 
-//init(this.canvas)

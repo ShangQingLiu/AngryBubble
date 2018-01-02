@@ -183,6 +183,9 @@
 // }
 
 
+$.ajaxSettings.async = false;
+
+
 function radians(t){
     return (t/180)*Math.PI;
 }
