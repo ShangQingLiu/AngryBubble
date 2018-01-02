@@ -290,6 +290,24 @@ function TextureBorder(bound, imageSrc, glObject, textureShaderProgram) {
     this.positionData =new Float32Array(positionArray);
     this.coordsData =new Float32Array(coordsArray);
     this.vertexNum = positionArray.length / 3;
+
+    let gl = this.gl;
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1); // Flip the image's y axis
+    // Enable texture unit0
+    gl.activeTexture(gl.TEXTURE0);
+    // Bind the texture object to the target
+    gl.bindTexture(gl.TEXTURE_2D, this.textureHandle);
+
+    // Set the texture parameters
+    //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    // Set the texture image
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, this.image);
+
+
     this.draw = function (vpMatrix) {
 
         if(!isImageReady){
@@ -317,25 +335,13 @@ function TextureBorder(bound, imageSrc, glObject, textureShaderProgram) {
         gl.enableVertexAttribArray(this.vsTexCoord);
 
 
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1); // Flip the image's y axis
-        // Enable texture unit0
-        gl.activeTexture(gl.TEXTURE0);
-        // Bind the texture object to the target
-        gl.bindTexture(gl.TEXTURE_2D, this.textureHandle);
 
-        // Set the texture parameters
-        //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-        // Set the texture image
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, this.image);
 
         // Set the texture unit 0 to the sampler
         gl.uniform1i(this.fsSampler, 0);
 
-
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, this.textureHandle);
 
 
         gl.drawArrays(gl.TRIANGLES, 0, this.vertexNum);
