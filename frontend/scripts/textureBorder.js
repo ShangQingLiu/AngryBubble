@@ -34,24 +34,8 @@ function TextureBorder(bound, imageSrc, glObject, textureShaderProgram) {
 
   this.image.src = imageSrc
   this.image.onload = function () {
-    isImageReady = true
     console.log('image ready')
-
-    let gl = this.gl
-    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1) // Flip the image's y axis
-    // Enable texture unit0
-    gl.activeTexture(gl.TEXTURE0)
-    // Bind the texture object to the target
-    gl.bindTexture(gl.TEXTURE_2D, this.textureHandle)
-
-    // Set the texture parameters
-    //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    // Set the texture image
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, this.image)
+    isImageReady = true
   }
 
   for (var i = -90; i <= 90; i += angleSpan) {
@@ -113,7 +97,25 @@ function TextureBorder(bound, imageSrc, glObject, textureShaderProgram) {
   }
   this.positionData = new Float32Array(positionArray)
   this.coordsData = new Float32Array(coordsArray)
-  this.vertexNum = positionArray.length / 3
+  this.vertexNum = positionArray.length / 3;
+
+
+    let gl = this.gl
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, 1) // Flip the image's y axis
+    // Enable texture unit0
+    gl.activeTexture(gl.TEXTURE0)
+    // Bind the texture object to the target
+    gl.bindTexture(gl.TEXTURE_2D, this.textureHandle)
+
+    // Set the texture parameters
+    //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    // Set the texture image
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, this.image);
+
 
   this.draw = function (vpMatrix) {
 

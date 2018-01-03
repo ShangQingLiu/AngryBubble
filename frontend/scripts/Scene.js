@@ -213,7 +213,7 @@ function Scene(_canvas) {
   //perspectiveMatrix = new Matrix4();
   perspectiveMatrix.perspective(45.0, aspect, zNear, zFar)
 
-  this.textureBorder = new TextureBorder(150, './scripts/resources/background.jpg', gl, this.textureShaderProgram)
+  this.textureBorder = new TextureBorder(20, './scripts/resources/background.jpg', gl, this.textureShaderProgram)
   this.balls = []
   this.balls.push(new Ball(this.gl, this.shaderProgram, 4))
 
