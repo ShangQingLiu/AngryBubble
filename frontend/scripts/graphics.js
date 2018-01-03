@@ -1,7 +1,6 @@
 const WINDOW_WIDTH = 800
 const WINDOW_HEIGHT = 600
 
-const canvas = document.querySelector('#main')
 const scene = new Scene(canvas)
 
 /*

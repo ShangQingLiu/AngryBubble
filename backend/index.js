@@ -40,7 +40,11 @@ io.on('connection', socket => {
   })
 
   socket.on('move', user => {
-    socket.broadcast.emit('a user move', user)
+    if (user != null) {
+      let index = users.findIndex((val) => val.id === user.id)
+      users[index] = user
+    }
+    socket.broadcast.emit('update', users)
   })
 })
 

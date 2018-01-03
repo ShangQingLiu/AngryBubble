@@ -2,6 +2,7 @@ const socket = io()
 
 let users = []
 let currentUser
+const canvas = document.getElementById('main')
 
 document.querySelector('#input').addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
@@ -11,13 +12,13 @@ document.querySelector('#input').addEventListener('keydown', (event) => {
   }
 })
 
-window.addEventListener('keydown', onKeyDown, false)
+document.addEventListener('keydown', onKeyDown, true)
 
 socket.on('welcome', initUsers)
 
 socket.on('update', updateUser)
 
-function onKeyDown() {
+function onKeyDown(event) {
   console.log('key: ' + event.key)
   switch (event.key) {
     case 'w':
@@ -35,7 +36,7 @@ function onKeyDown() {
     default:
       break
   }
-  updateUser(currentUser)
+  updateUser(users)
   socket.emit('move', currentUser)
 }
 
@@ -48,17 +49,11 @@ function initUsers(allUsers) {
   animate()
 }
 
-function addUser(user) {
-  console.log('add user')
-  let index
-  if ((index = users.findIndex((val) => val.id === user.id)) !== -1)
-    users[index] = user
-  else
-    users.push(user)
-  addBall(user)
-}
-
 function updateUser(allUsers) {
   console.log('update user')
+  let index
+  if ((index = users.findIndex((val) => val.id === socket.id)) !== -1)
+    currentUser = users[index]
+  console.log(currentUser)
   users = allUsers
 }
