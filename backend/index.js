@@ -32,10 +32,11 @@ io.on('connection', socket => {
       users[index] = newUser
     else
       users.push(newUser)
+
     console.log(users)
 
     socket.emit('welcome', users)
-    socket.broadcast.emit('new user enter', newUser)
+    socket.broadcast.emit('update', users)
   })
 
   socket.on('move', user => {
