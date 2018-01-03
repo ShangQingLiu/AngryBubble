@@ -46,8 +46,10 @@ function initUsers(allUsers) {
   let index
   if ((index = users.findIndex((val) => val.id === socket.id)) !== -1)
     currentUser = users[index]
-  drawObjects()
-  renderUsers()
+  console.log(currentUser)
+  animate()
+  // drawObjects()
+  // renderUsers()
 }
 
 function addUser(user) {

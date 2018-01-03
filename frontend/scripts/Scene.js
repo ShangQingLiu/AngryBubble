@@ -1,6 +1,4 @@
-
-
-
+/*
 let users = [];
 function UserInfo(_id) {
     this.id = _id;
@@ -19,27 +17,13 @@ let balls = [];
 for(var i = 0; i != 10; ++i){
     users.push(new UserInfo(i));
 }
+*/
 
- let currentUser = users[0];
+// let currentUser = users[0]
 // currentUser.radius = 5;
 // currentUser.pos.x = 5;
 // currentUser.pos.y = 5;
 // currentUser.pos.z = 5;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 const vsSource = `
 attribute vec3 vsPosition;
@@ -58,7 +42,7 @@ void main() {
     vertexPosition = vsModelMatrix * vec4(vsPosition, 1.0);
     gl_Position = vsMvpMatrix * vec4(vsPosition, 1.0);
 }
-`;
+`
 
 const fsSource = `
 #ifdef GL_ES
@@ -75,7 +59,7 @@ void main() {
     vec3 ambient = fsAmbientLight * vec3(fsKa);
     gl_FragColor = vec4(ambient, fsKa.a);
 }
-`;
+`
 const textureFsSource = `
 #ifdef GL_ES
 precision mediump float;
@@ -92,7 +76,7 @@ void main() {
     gl_FragColor = tempColor*fsKa;
 }
 
-`;
+`
 const textureVsSource = `
 attribute vec3 vsPosition;
 attribute vec2 vsTexCoord;
@@ -107,192 +91,187 @@ void main() {
     texCoord = vsTexCoord;
 
 }
-`;
+`
 
-let perspectiveMatrix = new Matrix4();
-let vpMatrix = new Matrix4();
-
+let perspectiveMatrix = new Matrix4()
+let vpMatrix = new Matrix4()
 
 function loadShader(gl, type, source) {
-    const shader = gl.createShader(type)
+  const shader = gl.createShader(type)
 
-    // Send the source to the shader object
+  // Send the source to the shader object
 
-    gl.shaderSource(shader, source)
+  gl.shaderSource(shader, source)
 
-    // Compile the shader program
+  // Compile the shader program
 
-    gl.compileShader(shader)
+  gl.compileShader(shader)
 
-    // See if it compiled successfully
+  // See if it compiled successfully
 
-    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        alert(
-            'An error occurred compiling the shaders: ' +
-            gl.getShaderInfoLog(shader)
-        )
-        gl.deleteShader(shader)
-        return null
-    }
-    return shader
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    alert(
+      'An error occurred compiling the shaders: ' +
+      gl.getShaderInfoLog(shader)
+    )
+    gl.deleteShader(shader)
+    return null
+  }
+  return shader
 }
 
 function initShaderProgram(gl, vsSource, fsSource) {
-    const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
-    const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
+  const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource)
+  const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource)
 
-    // Create the shader program
+  // Create the shader program
 
-    const shaderProgram = gl.createProgram();
-    gl.attachShader(shaderProgram, vertexShader);
-    gl.attachShader(shaderProgram, fragmentShader);
-    gl.linkProgram(shaderProgram);
+  const shaderProgram = gl.createProgram()
+  gl.attachShader(shaderProgram, vertexShader)
+  gl.attachShader(shaderProgram, fragmentShader)
+  gl.linkProgram(shaderProgram)
 
-    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-        alert(
-            'Unable to initialize the shader program: ' +
-            gl.getProgramInfoLog(shaderProgram)
-        )
-        return null;
-    }
+  if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+    alert(
+      'Unable to initialize the shader program: ' +
+      gl.getProgramInfoLog(shaderProgram)
+    )
+    return null
+  }
 
-    return shaderProgram;
+  return shaderProgram
 }
 
-let sceneInitReady = false;
-
+let sceneInitReady = false
 
 function Scene(_canvas) {
-    this.canvas = _canvas;
-    if(!this.canvas){
-        console.log("Failed to get canvas");
-        return;
-    };
-    this.gl = null;
-    this.objects = [];
-    this.fsAmbientLight = null;
-    var gl;
+  this.canvas = _canvas
+  if (!this.canvas) {
+    console.log('Failed to get canvas')
+    return
+  }
 
-    this.draw = function () {
+  this.gl = null
+  this.objects = []
+  this.fsAmbientLight = null
+  var gl
 
-        if(users.length > balls.length){
-            let deta = users.length - this.balls.length;
-            for(let i = 0; i != deta; ++i){
-                this.balls.push(new Ball(this.gl, this.shaderProgram, 4));
-            }
-        }
-        for(let i = 0; i != users.length; ++i){
+  this.draw = function () {
 
-            this.balls[i].setPosition(users[i].pos.x,users[i].pos.y,users[i].pos.z );
-            this.balls[i].setRadius(users[i].radius);
-        }
+    if (users.length > this.balls.length) {
+      let deta = users.length - this.balls.length
+      for (let i = 0; i != deta; ++i) {
+        this.balls.push(new Ball(this.gl, this.shaderProgram, 4))
+      }
+    }
+    for (let i = 0; i != users.length; ++i) {
 
-        var gl = this.gl;
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        gl.enable(gl.DEPTH_TEST);
-        setVpMatrix();
-
-        this.textureBorder.draw(vpMatrix);
-        for(var i = 0; i != users.length; ++i){
-            this.balls[i].draw(vpMatrix);
-        }
-
+      this.balls[i].setPosition(users[i].pos.x, users[i].pos.y, users[i].pos.z)
+      this.balls[i].setRadius(users[i].radius)
     }
 
-    try {
-        this.gl = _canvas.getContext('webgl');
-        gl = this.gl;
-        var canvas = _canvas;
-        gl.viewportWidth = canvas.width
-        gl.viewportHeight = canvas.height
-        gl.clearColor(0.0, 0.0, 0.0, 1.0) // Clear to black, fully opaque
-        gl.clearDepth(1.0) // Clear everything
-        gl.enable(gl.DEPTH_TEST) // Enable depth testing
-        gl.depthFunc(gl.LEQUAL) // Near things obscure far things
-    } catch (e) {
-        if (!gl) {
-            alert('unable to start WebGL')
-        }
-        console.error(e)
+    var gl = this.gl
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+    gl.enable(gl.DEPTH_TEST)
+    setVpMatrix()
+
+    this.textureBorder.draw(vpMatrix)
+    for (var i = 0; i != users.length; ++i) {
+      this.balls[i].draw(vpMatrix)
     }
 
-    this.shaderProgram = initShaderProgram(gl,vsSource, fsSource);
-    this.textureShaderProgram = initShaderProgram(gl, textureVsSource, textureFsSource);
-    this.fsAmbientLight = gl.getUniformLocation(this.shaderProgram, 'fsAmbientLight');
-    gl.useProgram(this.shaderProgram);
-    gl.uniform3f(this.fsAmbientLight, 0.6, 0.6, 0.6);
+  }
 
-    //const fieldOfView = 45 * Math.PI / 180; // in radians
-    const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-    const zNear = 0.1;
-    const zFar = 1000.0;
+  try {
+    this.gl = _canvas.getContext('webgl')
+    gl = this.gl
+    var canvas = _canvas
+    gl.viewportWidth = canvas.width
+    gl.viewportHeight = canvas.height
+    gl.clearColor(0.0, 0.0, 0.0, 1.0) // Clear to black, fully opaque
+    gl.clearDepth(1.0) // Clear everything
+    gl.enable(gl.DEPTH_TEST) // Enable depth testing
+    gl.depthFunc(gl.LEQUAL) // Near things obscure far things
+  } catch (e) {
+    if (!gl) {
+      alert('unable to start WebGL')
+    }
+    console.error(e)
+  }
 
-    //perspectiveMatrix = new Matrix4();
-    perspectiveMatrix.perspective(45.0, aspect, zNear, zFar);
+  this.shaderProgram = initShaderProgram(gl, vsSource, fsSource)
+  this.textureShaderProgram = initShaderProgram(gl, textureVsSource, textureFsSource)
+  this.fsAmbientLight = gl.getUniformLocation(this.shaderProgram, 'fsAmbientLight')
+  gl.useProgram(this.shaderProgram)
+  gl.uniform3f(this.fsAmbientLight, 0.6, 0.6, 0.6)
 
-    this.textureBorder = new TextureBorder(150,'./scripts/resources/background.jpg',gl,this.textureShaderProgram);
-    this.balls = [];
-    this.balls.push(new Ball(this.gl, this.shaderProgram, 4));
+  //const fieldOfView = 45 * Math.PI / 180; // in radians
+  const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight
+  const zNear = 0.1
+  const zFar = 1000.0
 
-    this.canvas.onmousedown = onMouseDown
-    document.onmouseup = onMouseUp
-    document.onmousemove = onMouseMove;
-    sceneHndle = this;
-    sceneInitReady = true;
+  //perspectiveMatrix = new Matrix4();
+  perspectiveMatrix.perspective(45.0, aspect, zNear, zFar)
+
+  this.textureBorder = new TextureBorder(150, './scripts/resources/background.jpg', gl, this.textureShaderProgram)
+  this.balls = []
+  this.balls.push(new Ball(this.gl, this.shaderProgram, 4))
+
+  this.canvas.onmousedown = onMouseDown
+  document.onmouseup = onMouseUp
+  document.onmousemove = onMouseMove
+  sceneHndle = this
+  sceneInitReady = true
 }
 
 let mouseDown = false
-let lastMouseX = null, lastMouseY = null, xAngle = 0, yAngle = 0;
-var sceneHndle = null;
+let lastMouseX = null, lastMouseY = null, xAngle = 0, yAngle = 0
+var sceneHndle = null
 
 function degToRad(deg) {
-    return deg / 180 * Math.PI
+  return deg / 180 * Math.PI
 }
 
 function onMouseDown(event) {
-    mouseDown = true;
+  mouseDown = true
 }
 
 function onMouseUp(event) {
-    mouseDown = false;
+  mouseDown = false
 }
 
 function onMouseMove(event) {
 
-    const factor = 0.3;
+  const factor = 0.3
 
-    var newX = event.clientX;
-    var newY = event.clientY;
+  var newX = event.clientX
+  var newY = event.clientY
 
-    if (!lastMouseX || !lastMouseY) {
-        lastMouseX = newX;
-        lastMouseY = newY;
-    }
+  if (!lastMouseX || !lastMouseY) {
+    lastMouseX = newX
+    lastMouseY = newY
+  }
 
+  var deltaX = newX - lastMouseX
+  var deltaY = newY - lastMouseY
 
-    var deltaX = newX - lastMouseX;
-    var deltaY = newY - lastMouseY;
+  xAngle += deltaX * factor
+  yAngle += deltaY * factor
 
+  setVpMatrix()
 
-    xAngle += deltaX * factor;
-    yAngle += deltaY * factor;
-
-    setVpMatrix();
-
-
-
-    lastMouseX = newX;
-    lastMouseY = newY;
-    console.log("update view")
+  lastMouseX = newX
+  lastMouseY = newY
+  console.log('update view')
 
 }
 
-function setVpMatrix(){
-    let rotateRadius = currentUser.radius*6;
-    let xzLength = -rotateRadius;
-    let cameraPosition = [xzLength * Math.sin(degToRad(-xAngle)), rotateRadius * Math.sin(degToRad(-yAngle)), xzLength * Math.cos(degToRad(-xAngle))]
-    let ballPosition = currentUser.pos;
-    vpMatrix.set(perspectiveMatrix);
-    vpMatrix.lookAt(cameraPosition[0],cameraPosition[1],cameraPosition[2],ballPosition.x,ballPosition.y,ballPosition.z, 0, 1, 0);
+function setVpMatrix() {
+  let rotateRadius = currentUser.radius * 6
+  let xzLength = -rotateRadius
+  let cameraPosition = [xzLength * Math.sin(degToRad(-xAngle)), rotateRadius * Math.sin(degToRad(-yAngle)), xzLength * Math.cos(degToRad(-xAngle))]
+  let ballPosition = currentUser.pos
+  vpMatrix.set(perspectiveMatrix)
+  vpMatrix.lookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2], ballPosition.x, ballPosition.y, ballPosition.z, 0, 1, 0)
 }
 

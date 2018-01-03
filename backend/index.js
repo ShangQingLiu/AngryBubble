@@ -25,7 +25,7 @@ io.on('connection', socket => {
         y: Math.random(),
         z: Math.random()
       },
-      size: ballConfig.initSize
+      radius: ballConfig.initSize
     }
     let index
     if ((index = users.findIndex((val) => val.id === newUser.id)) !== -1)

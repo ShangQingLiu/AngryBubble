@@ -1,6 +1,10 @@
 const WINDOW_WIDTH = 800
 const WINDOW_HEIGHT = 600
 
+const canvas = document.querySelector('#main')
+const scene = new Scene(canvas)
+
+/*
 const renderer = new THREE.WebGLRenderer({antialias: true})
 renderer.setRadius(WINDOW_WIDTH, WINDOW_HEIGHT)
 document.querySelector('#main').appendChild(renderer.domElement)
@@ -8,8 +12,11 @@ document.querySelector('#main').appendChild(renderer.domElement)
 const scene = new THREE.Scene()
 
 const cameraPos = new THREE.Spherical(10, Math.PI / 2, 0)
+*/
 
+/*
 function drawObjects() {
+  scene.draw()
   const cubeGEometry = new THREE.BoxGeometry(1, 1, 1)
   const basicMtl = new THREE.MeshBasicMaterial({color: 0xff0000, wireframe: true})
   const cube1 = new THREE.Mesh(cubeGEometry, basicMtl)
@@ -21,26 +28,24 @@ function drawObjects() {
   const cube4 = new THREE.Mesh(cubeGEometry, basicMtl)
   cube4.position.set(3, 1, -1)
 
-  /*
   const ballGeometry = new THREE.SphereGeometry(1, 12, 12)
   const Ball = new THREE.Mesh(ballGeometry, basicMtl)
   Ball.scale.set(0.5, 0.5, 0.5)
   Ball.position.set(0, 0, 0)
   Ball.name = 'Ball'
   scene.add(Ball)
-  */
   scene.add(cube1)
   scene.add(cube2)
   scene.add(cube3)
   scene.add(cube4)
 }
+  */
 
-const camera = initCamera()
-
-animate()
+// const camera = initCamera()
 
 // drawObjects()
 
+/*
 function initCamera() {
   const camera = new THREE.PerspectiveCamera(45, WINDOW_WIDTH / WINDOW_HEIGHT, 0.1, 1000)
   camera.position.set(12, 16, 20)
@@ -51,8 +56,11 @@ function initCamera() {
   // camera.lookAt(scene.getObjectByName('Ball').position)
   return camera
 }
+*/
+
+// animate()
 
 function animate() {
   requestAnimationFrame(animate)
-  renderer.render(scene, camera)
+  scene.draw()
 }
