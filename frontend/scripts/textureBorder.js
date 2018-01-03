@@ -146,7 +146,11 @@ function TextureBorder(bound, imageSrc, glObject, textureShaderProgram) {
     gl.uniform1i(this.fsSampler, 0)
 
     gl.activeTexture(gl.TEXTURE0)
-    gl.bindTexture(gl.TEXTURE_2D, this.textureHandle)
+    gl.bindTexture(gl.TEXTURE_2D, this.textureHandle);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 
     gl.drawArrays(gl.TRIANGLES, 0, this.vertexNum)
 

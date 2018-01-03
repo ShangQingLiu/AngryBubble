@@ -207,8 +207,8 @@ function Scene(_canvas) {
 
   //const fieldOfView = 45 * Math.PI / 180; // in radians
   const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight
-  const zNear = 0.1
-  const zFar = 1000.0
+  const zNear = 0.01
+  const zFar = 100.0
 
   //perspectiveMatrix = new Matrix4();
   perspectiveMatrix.perspective(45.0, aspect, zNear, zFar)
