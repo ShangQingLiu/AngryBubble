@@ -3,10 +3,12 @@ const socket = io()
 let users = []
 let currentUser
 const canvas = document.getElementById('main')
+canvas.height = window.innerHeight
+canvas.width = window.innerWidth
 
 document.querySelector('#input').addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
-    document.getElementById('login').style.visibility = 'hidden'
+    document.getElementById('cover').style.visibility = 'hidden'
     socket.emit('enter', event.target.value)
     event.target.value = ''
   }

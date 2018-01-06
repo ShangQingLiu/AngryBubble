@@ -1,6 +1,16 @@
-#login {
+#cover {
     width: 100vw;
     height: 100vh;
     position: absolute;
-    background: #888888;
+    display: flex;
+    justify-content: center;
+    background: transparent;
+}
+
+#login {
+    background: #FFFFFF;
+    width: 500px;
+    height: 300px;
+    margin-top: 60px;
+    padding: 20px;
 }
