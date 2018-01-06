@@ -20,24 +20,27 @@ socket.on('update', updateUser)
 
 function onKeyDown(event) {
   console.log('key: ' + event.key)
+  const tmpUser = JSON.parse(JSON.stringify(currentUser))
   switch (event.key) {
     case 'w':
-      currentUser.pos.y += 0.1
+      tmpUser.pos.y += 0.1
       break
     case 's':
-      currentUser.pos.y -= 0.1
+      tmpUser.pos.y -= 0.1
       break
     case 'a':
-      currentUser.pos.x -= 0.1
+      tmpUser.pos.x -= 0.1
       break
     case 'd':
-      currentUser.pos.x += 0.1
+      tmpUser.pos.x += 0.1
       break
     default:
       break
   }
-  updateUser(users)
-  socket.emit('move', currentUser)
+  // updateUser(users)
+  console.log(currentUser)
+  console.log(tmpUser)
+  socket.emit('move', tmpUser)
 }
 
 function initUsers(allUsers) {
@@ -51,9 +54,9 @@ function initUsers(allUsers) {
 
 function updateUser(allUsers) {
   console.log('update user')
+  users = allUsers
   let index
   if ((index = users.findIndex((val) => val.id === socket.id)) !== -1)
     currentUser = users[index]
   console.log(currentUser)
-  users = allUsers
 }
