@@ -41,7 +41,7 @@ function onKeyDown(event) {
       break
   }
   // update(users)
-  console.log(currentUser)
+  checkFoods(tmpUser)
   console.log(tmpUser)
   socket.emit('move', tmpUser)
 }
@@ -66,4 +66,24 @@ function update(args) {
   if ((index = users.findIndex((val) => val.id === socket.id)) !== -1)
     currentUser = users[index]
   console.log(currentUser)
+}
+
+function checkFoods(user) {
+  for (let i = 0; i < foods.length; i++) {
+    if (includeBall(user, foods[i])) {
+      console.log('eat food')
+      socket.emit('eat food', foods[i].id)
+    }
+  }
+}
+
+function includeBall(ball1, ball2) {
+  return (
+    (
+      Math.pow(ball1.pos.x - ball2.pos.x, 2) +
+      Math.pow(ball1.pos.y - ball2.pos.y, 2) +
+      Math.pow(ball1.pos.z - ball2.pos.z, 2)
+    ) <
+    Math.pow(ball1.radius - ball2.radius, 2)
+  )
 }

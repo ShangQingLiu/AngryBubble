@@ -64,6 +64,16 @@ io.on('connection', socket => {
       foods: foods
     })
   })
+
+  socket.on('eat food', food => {
+    let index = foods.findIndex((val) => val.id === food.id)
+    console.log("a food eaten")
+    foods.splice(index, 1)
+    io.emit('update', {
+      users: users,
+      foods: foods
+    })
+  })
 })
 
 http.listen(3000, () => {
@@ -97,6 +107,7 @@ function addFoods() {
     for (let i = 0; i < config.food.newBallInAddition; i++) {
       const food = {
         id: Math.random().toString(36).substr(2, 16),
+        radius: config.food.size,
         pos: { // todo: range
           x: Math.random() * 10,
           y: Math.random() * 10,
