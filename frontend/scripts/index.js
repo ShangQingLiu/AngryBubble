@@ -1,6 +1,7 @@
 const socket = io()
 
 let users = []
+let foods = []
 let currentUser
 const canvas = document.getElementById('main')
 canvas.height = window.innerHeight
@@ -45,8 +46,11 @@ function onKeyDown(event) {
   socket.emit('move', tmpUser)
 }
 
-function initUsers(allUsers) {
-  users = allUsers
+function initUsers(args) {
+  // users = allUsers
+  users = args.users
+  foods = args.foods
+  console.log(foods)
   let index
   if ((index = users.findIndex((val) => val.id === socket.id)) !== -1)
     currentUser = users[index]

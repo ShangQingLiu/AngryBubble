@@ -3,11 +3,12 @@ const app = express()
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
 const path = require('path')
-const ballConfig = require('./config.json')
+const config = require('./config.json')
 
 app.use(express.static(path.resolve(__dirname + '/../frontend')))
 
 let users = []
+let foods = []
 
 io.on('connection', socket => {
   console.log('a user connected')
@@ -17,6 +18,11 @@ io.on('connection', socket => {
 
   socket.on('enter', name => {
     console.log(`User [${name}] entered.`)
+
+    if (users.length === 0) { // first user
+      initFoods()
+    }
+
     const newUser = {
       id: socket.id,
       name: name,
@@ -25,7 +31,7 @@ io.on('connection', socket => {
         y: Math.random(),
         z: Math.random()
       },
-      radius: ballConfig.initSize
+      radius: config.initSize
     }
     let index
     if ((index = users.findIndex((val) => val.id === newUser.id)) !== -1)
@@ -35,7 +41,10 @@ io.on('connection', socket => {
 
     console.log(users)
 
-    socket.emit('welcome', users)
+    socket.emit('welcome', {
+      users: users,
+      foods: foods
+    })
     socket.broadcast.emit('update', users)
   })
 
@@ -52,3 +61,25 @@ io.on('connection', socket => {
 http.listen(3000, () => {
   console.log('listening on *:3000')
 })
+
+/////////////////// Functions //////////////////////
+
+function initFoods() {
+  foods = []
+  for (let i = 0; i < config.food.initNum; i++) {
+    const food = {
+      id: Math.random().toString(36).substr(2, 16),
+      pos: { // todo: range
+        x: Math.random() * 10,
+        y: Math.random() * 10,
+        z: Math.random() * 10
+      },
+      color: {
+        r: Math.floor(Math.random() * 255),
+        g: Math.floor(Math.random() * 255),
+        b: Math.floor(Math.random() * 255)
+      }
+    }
+    foods.push(food)
+  }
+}
