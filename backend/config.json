@@ -1,6 +1,7 @@
 {
   "initSize": 1,
   "food": {
+    "maxFoods": 200,
     "initNum": 100,
     "size": 0.001,
     "newBallInAddition": 10

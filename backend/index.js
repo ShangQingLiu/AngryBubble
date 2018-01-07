@@ -21,6 +21,8 @@ io.on('connection', socket => {
 
     if (users.length === 0) { // first user
       initFoods()
+    } else {
+      addFoods()
     }
 
     const newUser = {
@@ -45,7 +47,10 @@ io.on('connection', socket => {
       users: users,
       foods: foods
     })
-    socket.broadcast.emit('update', users)
+    socket.broadcast.emit('update', {
+      users: users,
+      foods: foods
+    })
   })
 
   socket.on('move', user => {
@@ -54,7 +59,10 @@ io.on('connection', socket => {
       let index = users.findIndex((val) => val.id === user.id)
       users[index] = user
     }
-    io.emit('update', users)
+    io.emit('update', {
+      users: users,
+      foods: foods
+    })
   })
 })
 
@@ -81,5 +89,26 @@ function initFoods() {
       }
     }
     foods.push(food)
+  }
+}
+
+function addFoods() {
+  if (foods.length < config.food.maxFoods) {
+    for (let i = 0; i < config.food.newBallInAddition; i++) {
+      const food = {
+        id: Math.random().toString(36).substr(2, 16),
+        pos: { // todo: range
+          x: Math.random() * 10,
+          y: Math.random() * 10,
+          z: Math.random() * 10
+        },
+        color: {
+          r: Math.floor(Math.random() * 255),
+          g: Math.floor(Math.random() * 255),
+          b: Math.floor(Math.random() * 255)
+        }
+      }
+      foods.push(food)
+    }
   }
 }

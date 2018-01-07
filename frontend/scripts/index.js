@@ -17,9 +17,9 @@ document.querySelector('#input').addEventListener('keydown', (event) => {
 
 document.addEventListener('keydown', onKeyDown, true)
 
-socket.on('welcome', initUsers)
+socket.on('welcome', init)
 
-socket.on('update', updateUser)
+socket.on('update', update)
 
 function onKeyDown(event) {
   console.log('key: ' + event.key)
@@ -40,13 +40,13 @@ function onKeyDown(event) {
     default:
       break
   }
-  // updateUser(users)
+  // update(users)
   console.log(currentUser)
   console.log(tmpUser)
   socket.emit('move', tmpUser)
 }
 
-function initUsers(args) {
+function init(args) {
   // users = allUsers
   users = args.users
   foods = args.foods
@@ -58,9 +58,10 @@ function initUsers(args) {
   animate()
 }
 
-function updateUser(allUsers) {
+function update(args) {
   console.log('update user')
-  users = allUsers
+  users = args.users
+  foods = args.foods
   let index
   if ((index = users.findIndex((val) => val.id === socket.id)) !== -1)
     currentUser = users[index]
