@@ -41,11 +41,12 @@ uniform vec3 uPointLightingLocation;
 vec3 uPointLightingColor = vec3(1.0, 1.0, 1.0);
 
 varying vec3 vLightWeighting;
+varying vec3 lightDirection;
 
 void main() {
     normal = normalize(vec3(vsNormalMatrix * vec4(vsNormal, 1.0)));
     vertexPosition = vsModelMatrix * vec4(vsPosition, 1.0);
-    vec3 lightDirection = normalize(uPointLightingLocation - vertexPosition.xyz);
+    lightDirection = normalize(uPointLightingLocation - vertexPosition.xyz);
     gl_Position = vsProjectionMatrix * vsViewMatrix * vertexPosition;
 }
 `
@@ -62,10 +63,12 @@ varying vec4 vertexPosition;
 varying vec3 normal;
 
 varying vec3 vLightWeighting;
+varying vec3 lightDirection;
 
 void main() {
+    float pointLight = dot(normal, lightDirection);
     vec3 ambient = fsAmbientLight * vec3(fsKa);
-    vec3 lightened = ambient * vLightWeighting;
+    vec3 lightened = ambient * pointLight;
     gl_FragColor = vec4(lightened, fsKa.a);
 }
 `
@@ -260,7 +263,7 @@ function Scene(_canvas) {
 let mouseDown = false
 let lastMouseX = null, lastMouseY = null, horizontalAngle = 0, verticalAngle = 0
 var sceneHndle = null
-const factor = 0.01
+const factor = 0.003
 
 function degToRad(deg) {
   return deg / 180 * Math.PI
