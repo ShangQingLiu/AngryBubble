@@ -1,5 +1,5 @@
 {
-  "initSize": 1,
+  "initSize": 1.0,
   "food": {
     "maxFoods": 200,
     "initNum": 100,

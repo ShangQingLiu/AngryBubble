@@ -43,10 +43,10 @@ function onKeyDown(event) {
       break
   }
   // update(users)
+  socket.emit('move', tmpUser)
   checkFoods(tmpUser)
   checkUsers(tmpUser)
   console.log(tmpUser)
-  socket.emit('move', tmpUser)
 }
 
 function init(args) {
@@ -75,7 +75,10 @@ function checkFoods(user) {
   for (let i = 0; i < foods.length; i++) {
     if (includeBall(user, foods[i])) {
       console.log('eat food', i)
-      socket.emit('eat food', foods[i])
+      socket.emit('eat food', {
+        food: foods[i],
+        user: currentUser
+      })
     }
   }
 }

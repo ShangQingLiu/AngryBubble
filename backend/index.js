@@ -66,13 +66,22 @@ io.on('connection', socket => {
     })
   })
 
-  socket.on('eat food', food => {
-    let index = foods.findIndex((val) => val.id === food.id)
-    if (index !== -1) {
-      console.log('a food eaten')
-      foods.splice(index, 1)
+  socket.on('eat food', args => {
+    let foodIdx = foods.findIndex((val) => val.id === args.food.id)
+    let userIdx = users.findIndex((val) => val.id === args.user.id)
+    if (foodIdx !== -1 && userIdx !== -1) {
+      console.log('a food eaten, ', userIdx)
+      users[userIdx].radius = users[userIdx].radius + config.food.size
+      console.log(users)
+      // users[userIdx].radius = Math.sqrt(
+      //   Math.pow(users[userIdx].radius, 3) +
+      //   Math.pow(config.food.size, 3)
+      // )
+      console.log(users[userIdx].radius)
+      foods.splice(foodIdx, 1)
       io.emit('update', {
-        users: users,
+        // users: users,
+        users: JSON.parse(JSON.stringify(users)),
         foods: foods
       })
     }
@@ -83,6 +92,7 @@ io.on('connection', socket => {
     let smallerIdx = users.findIndex((val) => val.id === args.smallerUser.id)
     if (biggerIdx !== -1 && smallerIdx !== -1) {
       console.log('a user eaten')
+      // users[biggerIdx].radius += config.food.size
       users[biggerIdx].radius = Math.sqrt(
         Math.pow(users[biggerIdx].radius, 3) +
         Math.pow(users[smallerIdx].radius, 3)
