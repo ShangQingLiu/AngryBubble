@@ -44,6 +44,7 @@ function onKeyDown(event) {
   }
   // update(users)
   checkFoods(tmpUser)
+  checkUsers(tmpUser)
   console.log(tmpUser)
   socket.emit('move', tmpUser)
 }
@@ -75,6 +76,18 @@ function checkFoods(user) {
     if (includeBall(user, foods[i])) {
       console.log('eat food')
       socket.emit('eat food', foods[i].id)
+    }
+  }
+}
+
+function checkUsers(user) {
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].id === user.id && includeBall(user, users[i])) {
+      console.log('eat ball')
+      socket.emit('eat ball', {
+        biggerUser: users[i].id,
+        smallerUser: currentUser
+      })
     }
   }
 }
