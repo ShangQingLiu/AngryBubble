@@ -35,8 +35,8 @@ io.on('connection', socket => {
       },
       radius: config.initSize
     }
-    let index
-    if ((index = users.findIndex((val) => val.id === newUser.id)) !== -1)
+    let index = users.findIndex((val) => val.id === newUser.id)
+    if (index !== -1)
       users[index] = newUser
     else
       users.push(newUser)
@@ -57,7 +57,8 @@ io.on('connection', socket => {
     if (user != null) {
       console.log(`user ${user.name} moving...`)
       let index = users.findIndex((val) => val.id === user.id)
-      users[index] = user
+      if (index !== -1)
+        users[index] = user
     }
     io.emit('update', {
       users: users,
@@ -67,12 +68,14 @@ io.on('connection', socket => {
 
   socket.on('eat food', food => {
     let index = foods.findIndex((val) => val.id === food.id)
-    console.log('a food eaten')
-    foods.splice(index, 1)
-    io.emit('update', {
-      users: users,
-      foods: foods
-    })
+    if (index !== -1) {
+      console.log('a food eaten')
+      foods.splice(index, 1)
+      io.emit('update', {
+        users: users,
+        foods: foods
+      })
+    }
   })
 
   socket.on('eat user', args => {

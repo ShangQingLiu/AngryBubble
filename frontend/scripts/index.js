@@ -74,8 +74,8 @@ function update(args) {
 function checkFoods(user) {
   for (let i = 0; i < foods.length; i++) {
     if (includeBall(user, foods[i])) {
-      console.log('eat food')
-      socket.emit('eat food', foods[i].id)
+      console.log('eat food', i)
+      socket.emit('eat food', foods[i])
     }
   }
 }
