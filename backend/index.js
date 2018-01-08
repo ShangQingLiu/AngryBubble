@@ -106,9 +106,9 @@ function initFoods() {
       id: Math.random().toString(36).substr(2, 16),
       radius: config.food.size,
       pos: { // todo: range
-        x: Math.random() * 10,
-        y: Math.random() * 10,
-        z: Math.random() * 10
+        x: Math.random() * 10 - 5,
+        y: Math.random() * 10 - 5,
+        z: Math.random() * 10 - 5
       },
       color: {
         r: Math.floor(Math.random() * 255),
