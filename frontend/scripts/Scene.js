@@ -28,19 +28,25 @@ for(var i = 0; i != 10; ++i){
 const vsSource = `
 attribute vec3 vsPosition;
 attribute vec3 vsNormal;
-uniform mat4 vsMvpMatrix;
+
+uniform mat4 vsProjectionMatrix;
+uniform mat4 vsViewMatrix;
 uniform mat4 vsModelMatrix;
 uniform mat4 vsNormalMatrix;
-
 
 varying vec4 vertexPosition;
 varying vec3 normal;
 
+uniform vec3 uPointLightingLocation;
+vec3 uPointLightingColor = vec3(1.0, 1.0, 1.0);
+
+varying vec3 vLightWeighting;
 
 void main() {
     normal = normalize(vec3(vsNormalMatrix * vec4(vsNormal, 1.0)));
     vertexPosition = vsModelMatrix * vec4(vsPosition, 1.0);
-    gl_Position = vsMvpMatrix * vec4(vsPosition, 1.0);
+    vec3 lightDirection = normalize(uPointLightingLocation - vertexPosition.xyz);
+    gl_Position = vsProjectionMatrix * vsViewMatrix * vertexPosition;
 }
 `
 
@@ -55,9 +61,12 @@ uniform vec4 fsKa;
 varying vec4 vertexPosition;
 varying vec3 normal;
 
+varying vec3 vLightWeighting;
+
 void main() {
     vec3 ambient = fsAmbientLight * vec3(fsKa);
-    gl_FragColor = vec4(ambient, fsKa.a);
+    vec3 lightened = ambient * vLightWeighting;
+    gl_FragColor = vec4(lightened, fsKa.a);
 }
 `
 const textureFsSource = `
@@ -93,8 +102,8 @@ void main() {
 }
 `
 
-let perspectiveMatrix = new Matrix4()
-let vpMatrix = new Matrix4()
+let projectionMatrix = new Matrix4()
+let viewMatrix = new Matrix4()
 
 function loadShader(gl, type, source) {
   const shader = gl.createShader(type)
@@ -173,13 +182,20 @@ function Scene(_canvas) {
     var gl = this.gl
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     gl.enable(gl.DEPTH_TEST)
-    setVpMatrix()
+    setViewMatrix()
+    setLight()
 
-    this.textureBorder.draw(vpMatrix)
+    gl.useProgram(this.shaderProgram)
+
+    gl.uniformMatrix4fv(this.vsViewMatrix, false, viewMatrix.elements);
+    gl.uniformMatrix4fv(this.vsProjectionMatrix, false, projectionMatrix.elements);
+    gl.uniform3f(this.uPointLightingLocation, currentUser.pos.x + 1, currentUser.pos.y + 1, currentUser.pos.z + 1);
+
     for (var i = 0; i != users.length; ++i) {
-      this.balls[i].draw(vpMatrix)
+      this.balls[i].draw(viewMatrix, projectionMatrix)
     }
 
+    this.textureBorder.draw(viewMatrix, projectionMatrix)
   }
 
   try {
@@ -202,6 +218,10 @@ function Scene(_canvas) {
   this.shaderProgram = initShaderProgram(gl, vsSource, fsSource)
   this.textureShaderProgram = initShaderProgram(gl, textureVsSource, textureFsSource)
   this.fsAmbientLight = gl.getUniformLocation(this.shaderProgram, 'fsAmbientLight')
+  this.vsViewMatrix = gl.getUniformLocation(this.shaderProgram, 'vsViewMatrix')
+  this.vsProjectionMatrix = gl.getUniformLocation(this.shaderProgram, 'vsProjectionMatrix')
+  this.uPointLightingLocation = gl.getUniformLocation(this.shaderProgram, 'uPointLightingLocation')
+
   gl.useProgram(this.shaderProgram)
   gl.uniform3f(this.fsAmbientLight, 0.6, 0.6, 0.6)
 
@@ -211,7 +231,7 @@ function Scene(_canvas) {
   const zFar = 100.0
 
   //perspectiveMatrix = new Matrix4();
-  perspectiveMatrix.perspective(45.0, aspect, zNear, zFar)
+  projectionMatrix.setPerspective(45.0, aspect, zNear, zFar)
 
   this.textureBorder = new TextureBorder(20, './scripts/resources/background.jpg', gl, this.textureShaderProgram)
   this.balls = []
@@ -264,7 +284,7 @@ function onMouseMove(event) {
     verticalAngle = Math.PI / 2
   }
 
-  setVpMatrix()
+  setViewMatrix()
 
   lastMouseX = newX
   lastMouseY = newY
@@ -272,8 +292,12 @@ function onMouseMove(event) {
 
 }
 
+function setLight() {
+
+}
+
 let scaleFactor = 6
-function setVpMatrix() {
+function setViewMatrix() {
   let rotateRadius = currentUser.radius * scaleFactor
   let direction = [
     -Math.cos(verticalAngle) * Math.sin(horizontalAngle) * rotateRadius,
@@ -282,8 +306,7 @@ function setVpMatrix() {
   ]
 
   let ballPosition = currentUser.pos
-  vpMatrix.set(perspectiveMatrix)
-  vpMatrix.lookAt(
+  viewMatrix.setLookAt(
     ballPosition.x + direction[0], 
     ballPosition.y + direction[1], 
     ballPosition.z + direction[2], 

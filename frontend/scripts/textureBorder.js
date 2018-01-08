@@ -120,13 +120,14 @@ function TextureBorder(bound, imageSrc, glObject, textureShaderProgram) {
     this.vertexNum = positionArray.length / 3;
 
 
-    this.draw = function (vpMatrix) {
+    this.draw = function (viewMatrix, projectionMatrix) {
 
         if (!isImageReady) {
             return
         }
 
-        var mvpMatrix = new Matrix4(vpMatrix)
+        var mvpMatrix = new Matrix4(projectionMatrix)
+        mvpMatrix.multiply(viewMatrix)
         var gl = this.gl
         gl.useProgram(this.program)
         gl.uniformMatrix4fv(this.vsMvpMatrix, false, mvpMatrix.elements)

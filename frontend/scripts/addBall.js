@@ -8,7 +8,6 @@ function Ball(GL, shaderProgram, slice){
     this.normalData = null;
     this.vsPosition = GL.getAttribLocation(shaderProgram, 'vsPosition');
     this.vsNormal = GL.getActiveAttrib(shaderProgram, 'vsNormal');
-    this.vsMvpMatrix = GL.getUniformLocation(shaderProgram, 'vsMvpMatrix');
     this.vsModelMatrix = GL.getUniformLocation(shaderProgram, 'vsModelMatrix');
     this.vsNormalMatrix = GL.getUniformLocation(shaderProgram, 'vsNormalMatrix');
     this.program = shaderProgram;
@@ -115,17 +114,18 @@ function Ball(GL, shaderProgram, slice){
         this.radius = R;
     };
 
-    this.draw = function (vpMatrix) {
+    this.draw = function (viewMatrix, projectionMatrix) {
 
         this.modelMatrix.setIdentity();
         this.modelMatrix.translate(this.position[0],this.position[1],this.position[2]);
         this.modelMatrix.scale(this.radius,this.radius,this.radius);
 
-        var mvpMatrix = new Matrix4(vpMatrix);
+        var mvpMatrix = new Matrix4(projectionMatrix);
+        mvpMatrix.multiply(viewMatrix);
+        mvpMatrix.multiply(this.modelMatrix);
         var normalMatrix = new Matrix4();
         var gl = this.gl;
 
-        mvpMatrix.multiply(this.modelMatrix);
         normalMatrix.setInverseOf(this.modelMatrix);
         normalMatrix.transpose();
 
