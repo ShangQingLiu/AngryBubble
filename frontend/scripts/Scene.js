@@ -243,8 +243,6 @@ function onMouseUp(event) {
 
 function onMouseMove(event) {
 
-  const factor = 0.3
-
   var newX = event.clientX
   var newY = event.clientY
 
@@ -292,5 +290,13 @@ function setVpMatrix() {
     ballPosition.y, 
     ballPosition.z, 
     0, 1, 0)
+}
+
+const STEP = 0.1
+function nextPositionToward(speed) {
+  let ballPosition = currentUser.pos
+  return {x: ballPosition.x + Math.cos(verticalAngle) * Math.sin(horizontalAngle) * STEP * speed, 
+          y: ballPosition.y + (-Math.sin(verticalAngle)) * STEP * speed, 
+          z: ballPosition.z + (-Math.cos(verticalAngle)) * Math.cos(horizontalAngle) * STEP * speed}
 }
 

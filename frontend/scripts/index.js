@@ -26,10 +26,12 @@ function onKeyDown(event) {
   const tmpUser = JSON.parse(JSON.stringify(currentUser))
   switch (event.key) {
     case 'w':
-      tmpUser.pos.y += 0.1
+      // tmpUser.pos.y += 0.1
+      tmpUser.pos = nextPositionToward(1)
       break
     case 's':
-      tmpUser.pos.y -= 0.1
+      // tmpUser.pos.y -= 0.1
+      tmpUser.pos = nextPositionToward(-1)
       break
     case 'a':
       tmpUser.pos.x -= 0.1
