@@ -225,8 +225,9 @@ function Scene(_canvas) {
 }
 
 let mouseDown = false
-let lastMouseX = null, lastMouseY = null, xAngle = 0, yAngle = 0
+let lastMouseX = null, lastMouseY = null, horizontalAngle = 0, verticalAngle = 0
 var sceneHndle = null
+const factor = 0.01
 
 function degToRad(deg) {
   return deg / 180 * Math.PI
@@ -255,8 +256,15 @@ function onMouseMove(event) {
   var deltaX = newX - lastMouseX
   var deltaY = newY - lastMouseY
 
-  xAngle += deltaX * factor
-  yAngle += deltaY * factor
+  horizontalAngle += deltaX * factor
+  verticalAngle += deltaY * factor
+
+  if (verticalAngle < -Math.PI / 2) {
+    verticalAngle = -Math.PI / 2
+  }
+  if (verticalAngle > Math.PI / 2) {
+    verticalAngle = Math.PI / 2
+  }
 
   setVpMatrix()
 
@@ -268,10 +276,21 @@ function onMouseMove(event) {
 
 function setVpMatrix() {
   let rotateRadius = currentUser.radius * 6
-  let xzLength = -rotateRadius
-  let cameraPosition = [xzLength * Math.sin(degToRad(-xAngle)), rotateRadius * Math.sin(degToRad(-yAngle)), xzLength * Math.cos(degToRad(-xAngle))]
+  let direction = [
+    -Math.cos(verticalAngle) * Math.sin(horizontalAngle) * rotateRadius,
+    Math.sin(verticalAngle) * rotateRadius,
+    Math.cos(verticalAngle) * Math.cos(horizontalAngle) * rotateRadius
+  ]
+
   let ballPosition = currentUser.pos
   vpMatrix.set(perspectiveMatrix)
-  vpMatrix.lookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2], ballPosition.x, ballPosition.y, ballPosition.z, 0, 1, 0)
+  vpMatrix.lookAt(
+    ballPosition.x + direction[0], 
+    ballPosition.y + direction[1], 
+    ballPosition.z + direction[2], 
+    ballPosition.x, 
+    ballPosition.y, 
+    ballPosition.z, 
+    0, 1, 0)
 }
 
