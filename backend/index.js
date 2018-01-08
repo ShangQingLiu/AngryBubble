@@ -104,6 +104,7 @@ function initFoods() {
   for (let i = 0; i < config.food.initNum; i++) {
     const food = {
       id: Math.random().toString(36).substr(2, 16),
+      radius: config.food.size,
       pos: { // todo: range
         x: Math.random() * 10,
         y: Math.random() * 10,
