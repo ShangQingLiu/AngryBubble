@@ -272,8 +272,9 @@ function onMouseMove(event) {
 
 }
 
+let scaleFactor = 6
 function setVpMatrix() {
-  let rotateRadius = currentUser.radius * 6
+  let rotateRadius = currentUser.radius * scaleFactor
   let direction = [
     -Math.cos(verticalAngle) * Math.sin(horizontalAngle) * rotateRadius,
     Math.sin(verticalAngle) * rotateRadius,
@@ -300,3 +301,10 @@ function nextPositionToward(speed) {
           z: ballPosition.z + (-Math.cos(verticalAngle)) * Math.cos(horizontalAngle) * STEP * speed}
 }
 
+function increaseFactor() {
+  factor += STEP
+}
+
+function decreaseFactor() {
+  factor -= STEP
+}
