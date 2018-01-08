@@ -38,9 +38,7 @@ varying vec4 vertexPosition;
 varying vec3 normal;
 
 uniform vec3 uPointLightingLocation;
-vec3 uPointLightingColor = vec3(1.0, 1.0, 1.0);
 
-varying vec3 vLightWeighting;
 varying vec3 lightDirection;
 
 void main() {
@@ -263,7 +261,7 @@ function Scene(_canvas) {
 let mouseDown = false
 let lastMouseX = null, lastMouseY = null, horizontalAngle = 0, verticalAngle = 0
 var sceneHndle = null
-const factor = 0.003
+const factor = 0.001
 
 function degToRad(deg) {
   return deg / 180 * Math.PI
