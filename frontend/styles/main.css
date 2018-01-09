@@ -23,4 +23,6 @@
     top: 0;
     right: 0;
     background: #FFFFFF;
+    display: flex;
+    justify-content: center;
 }

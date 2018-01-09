@@ -17,9 +17,14 @@ document.querySelector('#input').addEventListener('keydown', (event) => {
 
 document.addEventListener('keydown', onKeyDown, true)
 
-document.querySelector('#save').addEventListener('click', () => {
-  const image = canvas.toDataURL()
-  document.write(`<img src="${image}"/>`)
+document.querySelector('#save').addEventListener('click', (event) => {
+  event.preventDefault()
+  // const image = canvas.toDataURL()
+  // console.log(image)
+  // document.write(`<img src="${image}"/>`)
+  // window.open().location = image
+  const image = document.getElementById('main').toDataURL('image/png').replace('image/png', 'image/octet-stream') //Convert image to 'octet-stream' (Just a download, really)
+  window.open().location.href = image
 })
 
 socket.on('welcome', init)

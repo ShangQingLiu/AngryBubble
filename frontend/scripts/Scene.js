@@ -171,11 +171,11 @@ function Scene(_canvas) {
     if (users.length > this.userBalls.length) {
       let deta = users.length - this.userBalls.length
       for (let i = 0; i != deta; ++i) {
-          this.userBalls.push(new Ball(this.gl, this.shaderProgram, 4))
+        this.userBalls.push(new Ball(this.gl, this.shaderProgram, 4))
       }
-      deta = foods.length - this.foodBalls.length;
+      deta = foods.length - this.foodBalls.length
       for (let i = 0; i != deta; ++i) {
-          this.foodBalls.push(new Ball(this.gl, this.shaderProgram, 1));
+        this.foodBalls.push(new Ball(this.gl, this.shaderProgram, 1))
       }
 
     }
@@ -184,10 +184,10 @@ function Scene(_canvas) {
       this.userBalls[i].setRadius(users[i].radius)
     }
 
-    for (let i = 0; i != foods.length; ++i){
-        this.foodBalls[i].setPosition(foods[i].pos.x, foods[i].pos.y, foods[i].pos.z)
-        this.foodBalls[i].setRadius(foods[i].radius)
-        this.foodBalls[i].setColor(foods[i].color)
+    for (let i = 0; i != foods.length; ++i) {
+      this.foodBalls[i].setPosition(foods[i].pos.x, foods[i].pos.y, foods[i].pos.z)
+      this.foodBalls[i].setRadius(foods[i].radius)
+      this.foodBalls[i].setColor(foods[i].color)
     }
 
     var gl = this.gl
@@ -198,22 +198,22 @@ function Scene(_canvas) {
 
     gl.useProgram(this.shaderProgram)
 
-    gl.uniformMatrix4fv(this.vsViewMatrix, false, viewMatrix.elements);
-    gl.uniformMatrix4fv(this.vsProjectionMatrix, false, projectionMatrix.elements);
-    gl.uniform3f(this.uPointLightingLocation, currentUser.pos.x + 1, currentUser.pos.y + 1, currentUser.pos.z + 1);
+    gl.uniformMatrix4fv(this.vsViewMatrix, false, viewMatrix.elements)
+    gl.uniformMatrix4fv(this.vsProjectionMatrix, false, projectionMatrix.elements)
+    gl.uniform3f(this.uPointLightingLocation, currentUser.pos.x + 1, currentUser.pos.y + 1, currentUser.pos.z + 1)
 
     for (var i = 0; i != users.length; ++i) {
       this.userBalls[i].draw(viewMatrix, projectionMatrix)
     }
-    for( let i = 0; i != foods.length; ++i){
-      this.foodBalls[i].draw(viewMatrix, projectionMatrix);
+    for (let i = 0; i != foods.length; ++i) {
+      this.foodBalls[i].draw(viewMatrix, projectionMatrix)
     }
 
     this.textureBorder.draw(viewMatrix, projectionMatrix)
   }
 
   try {
-    this.gl = _canvas.getContext('webgl')
+    this.gl = _canvas.getContext('webgl', {preserveDrawingBuffer: true})
     gl = this.gl
     var canvas = _canvas
     gl.viewportWidth = canvas.width
@@ -248,8 +248,8 @@ function Scene(_canvas) {
   projectionMatrix.setPerspective(45.0, aspect, zNear, zFar)
 
   this.textureBorder = new TextureBorder(20, './scripts/resources/background.jpg', gl, this.textureShaderProgram)
-  this.userBalls = [];
-  this.foodBalls = [];
+  this.userBalls = []
+  this.foodBalls = []
 
   this.canvas.onmousedown = onMouseDown
   document.onmouseup = onMouseUp
@@ -311,6 +311,7 @@ function setLight() {
 }
 
 let scaleFactor = 6
+
 function setViewMatrix() {
   let rotateRadius = currentUser.radius * scaleFactor
   let direction = [
@@ -321,21 +322,24 @@ function setViewMatrix() {
 
   let ballPosition = currentUser.pos
   viewMatrix.setLookAt(
-    ballPosition.x + direction[0], 
-    ballPosition.y + direction[1], 
-    ballPosition.z + direction[2], 
-    ballPosition.x, 
-    ballPosition.y, 
-    ballPosition.z, 
+    ballPosition.x + direction[0],
+    ballPosition.y + direction[1],
+    ballPosition.z + direction[2],
+    ballPosition.x,
+    ballPosition.y,
+    ballPosition.z,
     0, 1, 0)
 }
 
 const STEP = 0.1
+
 function nextPositionToward(speed) {
   let ballPosition = currentUser.pos
-  return {x: ballPosition.x + Math.cos(verticalAngle) * Math.sin(horizontalAngle) * STEP * speed, 
-          y: ballPosition.y + (-Math.sin(verticalAngle)) * STEP * speed, 
-          z: ballPosition.z + (-Math.cos(verticalAngle)) * Math.cos(horizontalAngle) * STEP * speed}
+  return {
+    x: ballPosition.x + Math.cos(verticalAngle) * Math.sin(horizontalAngle) * STEP * speed,
+    y: ballPosition.y + (-Math.sin(verticalAngle)) * STEP * speed,
+    z: ballPosition.z + (-Math.cos(verticalAngle)) * Math.cos(horizontalAngle) * STEP * speed
+  }
 }
 
 function increaseFactor() {
