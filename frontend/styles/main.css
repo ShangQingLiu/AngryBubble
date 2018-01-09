@@ -24,5 +24,6 @@
     right: 0;
     background: #FFFFFF;
     display: flex;
+    flex-direction: column;
     justify-content: center;
 }

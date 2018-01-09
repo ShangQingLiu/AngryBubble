@@ -83,6 +83,7 @@ function update(args) {
     console.log('you\'ve been eaten')
     window.alert('you\'ve been eaten')
   }
+  updateRank()
   console.log(currentUser)
 }
 
@@ -120,4 +121,18 @@ function includeBall(ball1, ball2) {
     ) <
     Math.pow(ball1.radius - ball2.radius, 2)
   )
+}
+
+function updateRank() {
+  const rank = document.getElementById('users-table')
+  rank.innerHTML = ''
+  users.map(user => {
+    const newRow = rank.insertRow(0)
+    const nameCell = newRow.insertCell(0)
+    const radiusCell = newRow.insertCell(1)
+    const name = document.createTextNode(user.name)
+    const radius = document.createTextNode(user.radius)
+    nameCell.appendChild(name)
+    radiusCell.appendChild(radius)
+  })
 }
