@@ -214,13 +214,15 @@ function Scene(_canvas) {
     gl.uniform3f(this.uPointLightingLocation, currentUser.pos.x + 1, currentUser.pos.y + 1, currentUser.pos.z + 1)
 
       this.textureBorder.draw(viewMatrix, projectionMatrix)
-    gl.depthMask(false);
+      for (let i = 0; i != foods.length; ++i) {
+          this.foodBalls[i].draw(viewMatrix, projectionMatrix)
+      }
+      gl.depthMask(true);
     for (var i = 0; i != users.length; ++i) {
       this.userBalls[i].draw(viewMatrix, projectionMatrix)
     }
-    for (let i = 0; i != foods.length; ++i) {
-      this.foodBalls[i].draw(viewMatrix, projectionMatrix)
-    }
+
+
     gl.depthMask(true);
 
 
