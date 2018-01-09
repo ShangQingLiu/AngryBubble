@@ -1,5 +1,5 @@
-function Ball(GL, shaderProgram, slice){
-    this.gl=GL;
+function Ball(GL, shaderProgram, slice) {
+    this.gl = GL;
 
     this.modelMatrix = new Matrix4();
     this.positionBufferHandle = GL.createBuffer();
@@ -24,14 +24,14 @@ function Ball(GL, shaderProgram, slice){
 
 
     let radius = 1.0;
-    var angleSpan = 45.0/slice;
+    var angleSpan = 45.0 / slice;
     var tmp = new Array();
-    for (var i = -90; i <= 90; i+= angleSpan){
-        for(var j = 0; j < 360; j += angleSpan){
-            var r = radius*Math.cos(radians(i));
-            var x = r*Math.cos(radians(j));
-            var y = radius*Math.sin(radians(i));
-            var z = r*Math.sin(radians(j));
+    for (var i = -90; i <= 90; i += angleSpan) {
+        for (var j = 0; j < 360; j += angleSpan) {
+            var r = radius * Math.cos(radians(i));
+            var x = r * Math.cos(radians(j));
+            var y = radius * Math.sin(radians(i));
+            var z = r * Math.sin(radians(j));
             tmp.push(x);
             tmp.push(y);
             tmp.push(z);
@@ -42,21 +42,21 @@ function Ball(GL, shaderProgram, slice){
     var col = 360 / angleSpan;
     var k = col * (row - 2) * 6 * 8;  //!!
     var count = 0;
-    for(var i = 0; i < row; i++){
-        if(i != 0 && i != row - 1 ){
-            for(var j = 0; j < col; j++){
+    for (var i = 0; i < row; i++) {
+        if (i != 0 && i != row - 1) {
+            for (var j = 0; j < col; j++) {
                 k = i * col + j;
                 //time1
-                var pass = new Vector3([tmp[(k + col)*3],tmp[(k + col)*3+1],tmp[(k + col)*3+2]]);
+                var pass = new Vector3([tmp[(k + col) * 3], tmp[(k + col) * 3 + 1], tmp[(k + col) * 3 + 2]]);
                 pass.normalize();
                 //push position
                 positionArray.push(tmp[(k + col) * 3], tmp[(k + col) * 3 + 1], tmp[(k + col) * 3 + 2]);
                 //push color
                 //push normalize
-                normalArray.push(pass.elements[0],pass.elements[1],pass.elements[2]);
+                normalArray.push(pass.elements[0], pass.elements[1], pass.elements[2]);
 
                 var index = k + 1;
-                if(j == (col-1))
+                if (j == (col - 1))
                     index -= col;
                 //time2
                 pass = new Vector3([tmp[index * 3], tmp[index * 3 + 1], tmp[index * 3 + 2]]);
@@ -65,7 +65,7 @@ function Ball(GL, shaderProgram, slice){
                 positionArray.push(tmp[index * 3], tmp[index * 3 + 1], tmp[index * 3 + 2]);
                 //push color
                 //push normalize
-                normalArray.push(pass.elements[0],pass.elements[1],pass.elements[2]);
+                normalArray.push(pass.elements[0], pass.elements[1], pass.elements[2]);
 
                 //time3
                 pass = new Vector3([tmp[k * 3], tmp[k * 3 + 1], tmp[k * 3 + 2]]);
@@ -74,15 +74,15 @@ function Ball(GL, shaderProgram, slice){
                 positionArray.push(tmp[k * 3], tmp[k * 3 + 1], tmp[k * 3 + 2]);
                 //push color
                 //push normalize
-                normalArray.push(pass.elements[0],pass.elements[1],pass.elements[2]);
+                normalArray.push(pass.elements[0], pass.elements[1], pass.elements[2]);
             }
-            for (var j = 0; j <col; j++){
+            for (var j = 0; j < col; j++) {
                 k = i * col + j;
                 //time4
                 pass = new Vector3([tmp[(k - col) * 3], tmp[(k - col) * 3 + 1], tmp[(k - col) * 3 + 2]]);
                 pass.normalize();
                 positionArray.push(tmp[(k - col) * 3], tmp[(k - col) * 3 + 1], tmp[(k - col) * 3 + 2]);
-                normalArray.push(pass.elements[0],pass.elements[1],pass.elements[2]);
+                normalArray.push(pass.elements[0], pass.elements[1], pass.elements[2]);
 
                 var index = k - 1;
                 if ((j == 0))
@@ -91,12 +91,12 @@ function Ball(GL, shaderProgram, slice){
                 pass = new Vector3([tmp[index * 3], tmp[index * 3 + 1], tmp[index * 3 + 2]]);
                 pass.normalize();
                 positionArray.push(tmp[index * 3], tmp[index * 3 + 1], tmp[index * 3 + 2]);
-                normalArray.push(pass.elements[0],pass.elements[1],pass.elements[2]);
+                normalArray.push(pass.elements[0], pass.elements[1], pass.elements[2]);
                 //time6
                 pass = new Vector3([tmp[k * 3], tmp[k * 3 + 1], tmp[k * 3 + 2]]);
                 pass.normalize();
                 positionArray.push(tmp[k * 3], tmp[k * 3 + 1], tmp[k * 3 + 2]);
-                normalArray.push(pass.elements[0],pass.elements[1],pass.elements[2]);
+                normalArray.push(pass.elements[0], pass.elements[1], pass.elements[2]);
             }
         }
     }
@@ -107,21 +107,25 @@ function Ball(GL, shaderProgram, slice){
 
     this.setColor = function (color) {
         this.color = [color.r, color.g, color.b, 1.0];
-    }
+    };
 
-    this.setPosition = function (x,y,z) {
+    this.setUserColor = function () {
+        this.color = [1.0, 1.0, 1.0, 0.2];
+    };
+
+    this.setPosition = function (x, y, z) {
         this.position = [x, y, z];
     };
 
-    this.setRadius = function (R){ //resize the Ball
+    this.setRadius = function (R) { //resize the Ball
         this.radius = R;
     };
 
     this.draw = function (viewMatrix, projectionMatrix) {
 
         this.modelMatrix.setIdentity();
-        this.modelMatrix.translate(this.position[0],this.position[1],this.position[2]);
-        this.modelMatrix.scale(this.radius,this.radius,this.radius);
+        this.modelMatrix.translate(this.position[0], this.position[1], this.position[2]);
+        this.modelMatrix.scale(this.radius, this.radius, this.radius);
 
         var mvpMatrix = new Matrix4(projectionMatrix);
         mvpMatrix.multiply(viewMatrix);
@@ -160,7 +164,7 @@ function Ball(GL, shaderProgram, slice){
 
     };
 
-    function radians(t){
-        return (t/180)*Math.PI;
+    function radians(t) {
+        return (t / 180) * Math.PI;
     }
 }

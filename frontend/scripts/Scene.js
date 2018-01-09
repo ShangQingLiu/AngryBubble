@@ -167,21 +167,25 @@ function Scene(_canvas) {
   let gl
 
   this.draw = function () {
-
+    let gl=this.gl;
+    gl.enable(gl.DEPTH_TEST);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
     if (users.length > this.userBalls.length) {
-      let deta = users.length - this.userBalls.length
-      for (let i = 0; i != deta; ++i) {
-        this.userBalls.push(new Ball(this.gl, this.shaderProgram, 4))
-      }
-      deta = foods.length - this.foodBalls.length
+
+      let deta = foods.length - this.foodBalls.length
       for (let i = 0; i != deta; ++i) {
         this.foodBalls.push(new Ball(this.gl, this.shaderProgram, 3))
       }
 
-    }
-    for (let i = 0; i != users.length; ++i) {
-      this.userBalls[i].setPosition(users[i].pos.x, users[i].pos.y, users[i].pos.z)
-      this.userBalls[i].setRadius(users[i].radius)
+
+      gl.depthMask(false);
+      deta = users.length - this.userBalls.length
+      for (let i = 0; i != deta; ++i) {
+        this.userBalls.push(new Ball(this.gl, this.shaderProgram, 4))
+      }
+      gl.depthMask(true);
+
     }
 
     for (let i = 0; i != foods.length; ++i) {
@@ -190,9 +194,17 @@ function Scene(_canvas) {
       this.foodBalls[i].setColor(foods[i].color)
     }
 
-    var gl = this.gl
+    gl.depthMask(false);
+
+    for (let i = 0; i != users.length; ++i) {
+      this.userBalls[i].setPosition(users[i].pos.x, users[i].pos.y, users[i].pos.z)
+      this.userBalls[i].setRadius(users[i].radius);
+      this.userBalls[i].setUserColor();
+    }
+    gl.depthMask(true);
+
+
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-    gl.enable(gl.DEPTH_TEST)
     setViewMatrix()
     setLight()
 
