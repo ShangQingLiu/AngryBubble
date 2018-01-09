@@ -17,6 +17,11 @@ document.querySelector('#input').addEventListener('keydown', (event) => {
 
 document.addEventListener('keydown', onKeyDown, true)
 
+document.querySelector('#save').addEventListener('click', () => {
+  const image = canvas.toDataURL()
+  document.write(`<img src="${image}"/>`)
+})
+
 socket.on('welcome', init)
 
 socket.on('update', update)
@@ -71,7 +76,7 @@ function update(args) {
   }
   else {
     console.log('you\'ve been eaten')
-    window.alert("you've been eaten")
+    window.alert('you\'ve been eaten')
   }
   console.log(currentUser)
 }

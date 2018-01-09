@@ -14,3 +14,13 @@
     margin-top: 60px;
     padding: 20px;
 }
+
+#panel {
+    width: 200px;
+    height: 300px;
+    position: absolute;
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    background: #FFFFFF;
+}
