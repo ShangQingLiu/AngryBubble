@@ -66,7 +66,7 @@ varying vec3 lightDirection;
 void main() {
     float pointLight = dot(normal, lightDirection);
     vec3 ambient = fsAmbientLight * vec3(fsKa);
-    vec3 lightened = ambient * pointLight;
+    vec3 lightened = ambient + pointLight;
     gl_FragColor = vec4(lightened, fsKa.a);
 }
 `
@@ -175,7 +175,7 @@ function Scene(_canvas) {
       }
       deta = foods.length - this.foodBalls.length
       for (let i = 0; i != deta; ++i) {
-        this.foodBalls.push(new Ball(this.gl, this.shaderProgram, 1))
+        this.foodBalls.push(new Ball(this.gl, this.shaderProgram, 3))
       }
 
     }
@@ -261,7 +261,7 @@ function Scene(_canvas) {
 let mouseDown = false
 let lastMouseX = null, lastMouseY = null, horizontalAngle = 0, verticalAngle = 0
 var sceneHndle = null
-const factor = 0.001
+const CAMERA_MOVE_FACTOR = 0.01
 
 function degToRad(deg) {
   return deg / 180 * Math.PI
@@ -288,8 +288,8 @@ function onMouseMove(event) {
   var deltaX = newX - lastMouseX
   var deltaY = newY - lastMouseY
 
-  horizontalAngle += deltaX * factor
-  verticalAngle += deltaY * factor
+  horizontalAngle += deltaX * CAMERA_MOVE_FACTOR
+  verticalAngle += deltaY * CAMERA_MOVE_FACTOR
 
   if (verticalAngle < -Math.PI / 2) {
     verticalAngle = -Math.PI / 2
@@ -343,9 +343,9 @@ function nextPositionToward(speed) {
 }
 
 function increaseFactor() {
-  factor += STEP
+  CAMERA_MOVE_FACTOR += STEP
 }
 
 function decreaseFactor() {
-  factor -= STEP
+  CAMERA_MOVE_FACTOR -= STEP
 }

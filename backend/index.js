@@ -124,9 +124,9 @@ function initFoods() {
         z: Math.random() * 10 - 5
       },
       color: {
-        r: Math.floor(Math.random()),
-        g: Math.floor(Math.random()),
-        b: Math.floor(Math.random())
+        r: Math.random(),
+        g: Math.random(),
+        b: Math.random()
       }
     }
     foods.push(food)

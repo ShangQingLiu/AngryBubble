@@ -414,9 +414,9 @@ Matrix4.prototype.perspective = function(fovy, aspect, near, far) {
 
 /**
  * Set the matrix for scaling.
- * @param x The scale factor along the X axis
- * @param y The scale factor along the Y axis
- * @param z The scale factor along the Z axis
+ * @param x The scale CAMERA_MOVE_FACTOR along the X axis
+ * @param y The scale CAMERA_MOVE_FACTOR along the Y axis
+ * @param z The scale CAMERA_MOVE_FACTOR along the Z axis
  * @return this
  */
 Matrix4.prototype.setScale = function(x, y, z) {
@@ -430,9 +430,9 @@ Matrix4.prototype.setScale = function(x, y, z) {
 
 /**
  * Multiply the matrix for scaling from the right.
- * @param x The scale factor along the X axis
- * @param y The scale factor along the Y axis
- * @param z The scale factor along the Z axis
+ * @param x The scale CAMERA_MOVE_FACTOR along the X axis
+ * @param y The scale CAMERA_MOVE_FACTOR along the Y axis
+ * @param z The scale CAMERA_MOVE_FACTOR along the Z axis
  * @return this
  */
 Matrix4.prototype.scale = function(x, y, z) {
