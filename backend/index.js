@@ -87,7 +87,7 @@ io.on('connection', socket => {
     }
   })
 
-  socket.on('eat user', args => {
+  socket.on('eat ball', args => {
     let biggerIdx = users.findIndex((val) => val.id === args.biggerUser.id)
     let smallerIdx = users.findIndex((val) => val.id === args.smallerUser.id)
     if (biggerIdx !== -1 && smallerIdx !== -1) {
@@ -97,7 +97,7 @@ io.on('connection', socket => {
         Math.pow(users[biggerIdx].radius, 3) +
         Math.pow(users[smallerIdx].radius, 3)
       )
-      users.splice(smallerIdx, biggerIdx)
+      users.splice(smallerIdx, 1)
       io.emit('update', {
         users: users,
         foods: foods
@@ -124,9 +124,9 @@ function initFoods() {
         z: Math.random() * 10 - 5
       },
       color: {
-        r: Math.floor(Math.random() * 255),
-        g: Math.floor(Math.random() * 255),
-        b: Math.floor(Math.random() * 255)
+        r: Math.floor(Math.random()),
+        g: Math.floor(Math.random()),
+        b: Math.floor(Math.random())
       }
     }
     foods.push(food)

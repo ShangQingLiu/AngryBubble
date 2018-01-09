@@ -66,8 +66,13 @@ function update(args) {
   users = args.users
   foods = args.foods
   let index
-  if ((index = users.findIndex((val) => val.id === socket.id)) !== -1)
+  if ((index = users.findIndex((val) => val.id === socket.id)) !== -1) {
     currentUser = users[index]
+  }
+  else {
+    console.log('you\'ve been eaten')
+    window.alert("you've been eaten")
+  }
   console.log(currentUser)
 }
 
@@ -85,11 +90,12 @@ function checkFoods(user) {
 
 function checkUsers(user) {
   for (let i = 0; i < users.length; i++) {
-    if (users[i].id === user.id && includeBall(user, users[i])) {
+    if (users[i].id !== user.id && includeBall(user, users[i])) {
       console.log('eat ball')
       socket.emit('eat ball', {
-        biggerUser: users[i].id,
-        smallerUser: currentUser
+        currentUser: user,
+        biggerUser: users[i].radius > user.radius ? users[i] : user,
+        smallerUser: users[i].radius <= user.radius ? users[i] : user
       })
     }
   }
