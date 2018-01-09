@@ -106,7 +106,7 @@ function Ball(GL, shaderProgram, slice) {
     this.vertexNum = normalArray.length / 3;
 
     this.setColor = function (color) {
-        this.color = [color.r, color.g, color.b, 1.0];
+        this.color = [color.r, color.g, color.b, 0.7];
     };
 
     this.setUserColor = function () {

@@ -66,7 +66,7 @@ varying vec3 lightDirection;
 void main() {
     float pointLight = dot(normal, lightDirection);
     vec3 ambient = fsAmbientLight * vec3(fsKa);
-    vec3 lightened = ambient + pointLight;
+    vec3 lightened = (ambient + pointLight) * fsKa.a;
     gl_FragColor = vec4(lightened, fsKa.a);
 }
 `
@@ -170,16 +170,14 @@ function Scene(_canvas) {
     let gl=this.gl;
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA);
+    gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA)
     if (users.length > this.userBalls.length) {
-
+      gl.depthMask(false);
       let deta = foods.length - this.foodBalls.length
       for (let i = 0; i != deta; ++i) {
         this.foodBalls.push(new Ball(this.gl, this.shaderProgram, 3))
       }
 
-
-      gl.depthMask(false);
       deta = users.length - this.userBalls.length
       for (let i = 0; i != deta; ++i) {
         this.userBalls.push(new Ball(this.gl, this.shaderProgram, 4))
@@ -188,13 +186,14 @@ function Scene(_canvas) {
 
     }
 
+    gl.depthMask(false);
     for (let i = 0; i != foods.length; ++i) {
       this.foodBalls[i].setPosition(foods[i].pos.x, foods[i].pos.y, foods[i].pos.z)
       this.foodBalls[i].setRadius(foods[i].radius)
       this.foodBalls[i].setColor(foods[i].color)
     }
 
-    gl.depthMask(false);
+
 
     for (let i = 0; i != users.length; ++i) {
       this.userBalls[i].setPosition(users[i].pos.x, users[i].pos.y, users[i].pos.z)
@@ -214,14 +213,17 @@ function Scene(_canvas) {
     gl.uniformMatrix4fv(this.vsProjectionMatrix, false, projectionMatrix.elements)
     gl.uniform3f(this.uPointLightingLocation, currentUser.pos.x + 1, currentUser.pos.y + 1, currentUser.pos.z + 1)
 
+      this.textureBorder.draw(viewMatrix, projectionMatrix)
+    gl.depthMask(false);
     for (var i = 0; i != users.length; ++i) {
       this.userBalls[i].draw(viewMatrix, projectionMatrix)
     }
     for (let i = 0; i != foods.length; ++i) {
       this.foodBalls[i].draw(viewMatrix, projectionMatrix)
     }
+    gl.depthMask(true);
 
-    this.textureBorder.draw(viewMatrix, projectionMatrix)
+
   }
 
   try {
