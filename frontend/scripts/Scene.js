@@ -1,29 +1,3 @@
-/*
-let users = [];
-function UserInfo(_id) {
-    this.id = _id;
-    this.name = _id;
-    this.pos = {
-        x: Math.random()*100 - 50,
-        y: Math.random()*100 - 50,
-        z: Math.random()*100 - 50
-    };
-    this.radius = Math.random()*3 + 5;
-}
-
-let balls = [];
-
-
-for(var i = 0; i != 10; ++i){
-    users.push(new UserInfo(i));
-}
-*/
-
-// let currentUser = users[0]
-// currentUser.radius = 5;
-// currentUser.pos.x = 5;
-// currentUser.pos.y = 5;
-// currentUser.pos.z = 5;
 
 const vsSource = `
 attribute vec3 vsPosition;
@@ -189,14 +163,11 @@ function Scene(_canvas) {
       this.foodBalls[i].setColor(foods[i].color)
     }
 
-
-
     for (let i = 0; i != users.length; ++i) {
       this.userBalls[i].setPosition(users[i].pos.x, users[i].pos.y, users[i].pos.z)
       this.userBalls[i].setRadius(users[i].radius);
       this.userBalls[i].setUserColor();
     }
-
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
     setViewMatrix()
@@ -206,7 +177,7 @@ function Scene(_canvas) {
 
     gl.uniformMatrix4fv(this.vsViewMatrix, false, viewMatrix.elements)
     gl.uniformMatrix4fv(this.vsProjectionMatrix, false, projectionMatrix.elements)
-    gl.uniform3f(this.uPointLightingLocation, currentUser.pos.x + 1, currentUser.pos.y + 1, currentUser.pos.z + 1)
+    gl.uniform3f(this.uPointLightingLocation, currentUser.pos.x + 0.01, currentUser.pos.y + 0.01, currentUser.pos.z + 0.01)
 
       this.textureBorder.draw(viewMatrix, projectionMatrix)
       for (let i = 0; i != foods.length; ++i) {
@@ -265,6 +236,7 @@ function Scene(_canvas) {
   this.canvas.onmousedown = onMouseDown
   document.onmouseup = onMouseUp
   document.onmousemove = onMouseMove
+  document.onmousewheel = onMouseWheel;
   sceneHndle = this
   sceneInitReady = true
 }
@@ -273,6 +245,7 @@ let mouseDown = false
 let lastMouseX = null, lastMouseY = null, horizontalAngle = 0, verticalAngle = 0
 var sceneHndle = null
 const CAMERA_MOVE_FACTOR = 0.01
+let viewDistance = 6
 
 function degToRad(deg) {
   return deg / 180 * Math.PI
@@ -317,14 +290,23 @@ function onMouseMove(event) {
 
 }
 
+const wheelFactor = 0.05
+function onMouseWheel(e) {
+  let deltaY = e.deltaY * wheelFactor
+  viewDistance -= deltaY
+  if (viewDistance < currentUser.radius * 3) {
+    viewDistance = currentUser.radius * 3
+  } else if (viewDistance > currentUser.radius * 6) {
+    viewDistance = currentUser.radius * 6
+  }
+}
+
 function setLight() {
 
 }
 
-let scaleFactor = 6
-
 function setViewMatrix() {
-  let rotateRadius = currentUser.radius * scaleFactor
+  let rotateRadius = viewDistance
   let direction = [
     -Math.cos(verticalAngle) * Math.sin(horizontalAngle) * rotateRadius,
     Math.sin(verticalAngle) * rotateRadius,
