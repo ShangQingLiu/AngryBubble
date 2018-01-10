@@ -106,11 +106,11 @@ function Ball(GL, shaderProgram, slice) {
     this.vertexNum = normalArray.length / 3;
 
     this.setColor = function (color) {
-        this.color = [color.r, color.g, color.b, 0.7];
+        this.color = [color.r, color.g, color.b, 1.0];
     };
 
     this.setUserColor = function () {
-        this.color = [1.0, 1.0, 1.0, 0.2];
+        this.color = [1.0, 1.0, 0.0, 0.2];
     };
 
     this.setPosition = function (x, y, z) {

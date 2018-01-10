@@ -172,7 +172,6 @@ function Scene(_canvas) {
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA)
     if (users.length > this.userBalls.length) {
-      gl.depthMask(false);
       let deta = foods.length - this.foodBalls.length
       for (let i = 0; i != deta; ++i) {
         this.foodBalls.push(new Ball(this.gl, this.shaderProgram, 4))
@@ -180,13 +179,10 @@ function Scene(_canvas) {
 
       deta = users.length - this.userBalls.length
       for (let i = 0; i != deta; ++i) {
-        this.userBalls.push(new Ball(this.gl, this.shaderProgram, 4))
+          this.userBalls.push(new Ball(this.gl, this.shaderProgram, 4))
       }
-      gl.depthMask(true);
-
     }
 
-    gl.depthMask(false);
     for (let i = 0; i != foods.length; ++i) {
       this.foodBalls[i].setPosition(foods[i].pos.x, foods[i].pos.y, foods[i].pos.z)
       this.foodBalls[i].setRadius(foods[i].radius)
@@ -200,7 +196,6 @@ function Scene(_canvas) {
       this.userBalls[i].setRadius(users[i].radius);
       this.userBalls[i].setUserColor();
     }
-    gl.depthMask(true);
 
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
