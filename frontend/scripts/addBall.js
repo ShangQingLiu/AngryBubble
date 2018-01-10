@@ -38,8 +38,8 @@ function Ball(GL, shaderProgram, slice) {
         }
     }
 
-    var row = 180 / angleSpan + 1;
-    var col = 360 / angleSpan + 1;
+    var row = parseInt(180 / angleSpan) + 1;
+    var col = parseInt(360 / angleSpan) + 1;
     var k = col * (row - 2) * 6 * 8;  //!!
     var count = 0;
     for (var i = 0; i < row; i++) {
