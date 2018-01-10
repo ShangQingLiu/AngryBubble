@@ -93,9 +93,10 @@ io.on('connection', socket => {
     if (biggerIdx !== -1 && smallerIdx !== -1) {
       console.log('a user eaten')
       // users[biggerIdx].radius += config.food.size
-      users[biggerIdx].radius = Math.sqrt(
+      users[biggerIdx].radius = Math.pow(
         Math.pow(users[biggerIdx].radius, 3) +
-        Math.pow(users[smallerIdx].radius, 3)
+        Math.pow(users[smallerIdx].radius, 3),
+        0.33333333333
       )
       users.splice(smallerIdx, 1)
       io.emit('update', {
