@@ -25,7 +25,7 @@ function TextureBorder(bound, imageSrc, glObject, textureShaderProgram) {
     this.program = textureShaderProgram
 
     var radius = bound
-    var slice = 4
+    var slice = 5
     var positionArray = new Array()
     var coordsArray = new Array()
     var angleSpan = 45.0 / slice
@@ -59,7 +59,7 @@ function TextureBorder(bound, imageSrc, glObject, textureShaderProgram) {
     }
 
     for (var i = -90; i <= 90; i += angleSpan) {
-        for (var j = 0; j < 360; j += angleSpan) {
+        for (var j = 0; j <= 360; j += angleSpan) {
             var r = radius * Math.cos(radians(i))
             var x = r * Math.cos(radians(j))
             var y = radius * Math.sin(radians(i))
@@ -71,7 +71,7 @@ function TextureBorder(bound, imageSrc, glObject, textureShaderProgram) {
     }
 
     var row = parseInt(180 / angleSpan) + 1
-    var col = parseInt(360 / angleSpan)
+    var col = parseInt(360 / angleSpan) + 1
     var k = col * (row - 2) * 6 * 8  //!!
     for (var i = 0; i < row; i++) {
         if (i != 0 && i != row - 1) {

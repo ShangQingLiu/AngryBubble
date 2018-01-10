@@ -27,7 +27,7 @@ function Ball(GL, shaderProgram, slice) {
     var angleSpan = 45.0 / slice;
     var tmp = new Array();
     for (var i = -90; i <= 90; i += angleSpan) {
-        for (var j = 0; j < 360; j += angleSpan) {
+        for (var j = 0; j <= 360; j += angleSpan) {
             var r = radius * Math.cos(radians(i));
             var x = r * Math.cos(radians(j));
             var y = radius * Math.sin(radians(i));
@@ -39,7 +39,7 @@ function Ball(GL, shaderProgram, slice) {
     }
 
     var row = 180 / angleSpan + 1;
-    var col = 360 / angleSpan;
+    var col = 360 / angleSpan + 1;
     var k = col * (row - 2) * 6 * 8;  //!!
     var count = 0;
     for (var i = 0; i < row; i++) {

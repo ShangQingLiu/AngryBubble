@@ -175,7 +175,7 @@ function Scene(_canvas) {
       gl.depthMask(false);
       let deta = foods.length - this.foodBalls.length
       for (let i = 0; i != deta; ++i) {
-        this.foodBalls.push(new Ball(this.gl, this.shaderProgram, 3))
+        this.foodBalls.push(new Ball(this.gl, this.shaderProgram, 4))
       }
 
       deta = users.length - this.userBalls.length
