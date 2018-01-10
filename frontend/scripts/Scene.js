@@ -31,6 +31,8 @@ precision mediump float;
 uniform vec3 fsAmbientLight;
 uniform vec4 fsKa;
 
+uniform float lightFactor;
+
 varying vec4 vertexPosition;
 varying vec3 normal;
 
@@ -40,7 +42,7 @@ varying vec3 lightDirection;
 void main() {
     float pointLight = dot(normal, lightDirection);
     vec3 ambient = fsAmbientLight * vec3(fsKa);
-    vec3 lightened = (ambient + pointLight) * fsKa.a;
+    vec3 lightened = (ambient + pointLight) * lightFactor * fsKa.a;
     gl_FragColor = vec4(lightened, fsKa.a);
 }
 `
@@ -178,6 +180,7 @@ function Scene(_canvas) {
     gl.uniformMatrix4fv(this.vsViewMatrix, false, viewMatrix.elements)
     gl.uniformMatrix4fv(this.vsProjectionMatrix, false, projectionMatrix.elements)
     gl.uniform3f(this.uPointLightingLocation, currentUser.pos.x + 0.01, currentUser.pos.y + 0.01, currentUser.pos.z + 0.01)
+    gl.uniform1f(this.lightFactor, lightIndensity)
 
       this.textureBorder.draw(viewMatrix, projectionMatrix)
       for (let i = 0; i != foods.length; ++i) {
@@ -217,6 +220,7 @@ function Scene(_canvas) {
   this.vsViewMatrix = gl.getUniformLocation(this.shaderProgram, 'vsViewMatrix')
   this.vsProjectionMatrix = gl.getUniformLocation(this.shaderProgram, 'vsProjectionMatrix')
   this.uPointLightingLocation = gl.getUniformLocation(this.shaderProgram, 'uPointLightingLocation')
+  this.lightFactor = gl.getUniformLocation(this.shaderProgram, 'lightFactor')
 
   gl.useProgram(this.shaderProgram)
   gl.uniform3f(this.fsAmbientLight, 0.6, 0.6, 0.6)
@@ -294,10 +298,10 @@ const wheelFactor = 0.05
 function onMouseWheel(e) {
   let deltaY = e.deltaY * wheelFactor
   viewDistance -= deltaY
-  if (viewDistance < currentUser.radius * 3) {
-    viewDistance = currentUser.radius * 3
-  } else if (viewDistance > currentUser.radius * 6) {
-    viewDistance = currentUser.radius * 6
+  if (viewDistance < 5) {
+    viewDistance = 5
+  } else if (viewDistance > 10) {
+    viewDistance = 10
   }
 }
 
@@ -342,3 +346,11 @@ function increaseFactor() {
 function decreaseFactor() {
   CAMERA_MOVE_FACTOR -= STEP
 }
+
+var lightIndensity = 1
+function setLightIndensity(l) {
+  if (l > 0) {
+    lightIndensity = l
+  }
+}
+
