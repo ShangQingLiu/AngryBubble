@@ -174,5 +174,14 @@ function updateRank() {
 }
 
 function checkCollision(user) {
-
+  for (const s of stone) {
+    if ((
+        Math.pow(user.pos.x - s.pos.x, 2) +
+        Math.pow(user.pos.y - s.pos.y, 2) +
+        Math.pow(user.pos.z - s.pos.z, 2)
+      ) <
+      Math.pow(user.radius + s.radius, 2)) {
+      return true
+    }
+  }
 }
