@@ -44,6 +44,7 @@ canvas.width = window.innerWidth
 document.querySelector('#input').addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
     document.getElementById('cover').style.visibility = 'hidden'
+    document.getElementById('panel').style.visibility = 'visible'
     socket.emit('enter', event.target.value)
     event.target.value = ''
   }
@@ -51,15 +52,23 @@ document.querySelector('#input').addEventListener('keydown', (event) => {
 
 document.addEventListener('keydown', onKeyDown, true)
 
-document.querySelector('#save').addEventListener('click', (event) => {
-  event.preventDefault()
-  // const image = canvas.toDataURL()
-  // console.log(image)
-  // document.write(`<img src="${image}"/>`)
-  // window.open().location = image
-  const image = document.getElementById('main').toDataURL('image/png').replace('image/png', 'image/octet-stream') //Convert image to 'octet-stream' (Just a download, really)
-  window.open().location.href = image
-})
+document.getElementById('save').addEventListener('click', function () {
+    // event.preventDefault()
+    // const image = canvas.toDataURL()
+    // console.log(image)
+    // document.write(`<img src="${image}"/>`)
+    // window.open().location = image
+    // let image = document.getElementById('main').toDataURL('image/png').replace('image/png', 'image/octet-stream') //Convert image to 'octet-stream' (Just a download, really)
+    // this.download = 'scene.png'
+    // window.open().location.href = image
+    downloadCanvas(this, 'main', 'scene.png')
+
+    function downloadCanvas(link, canvasId, filename) {
+      link.href = document.getElementById(canvasId).toDataURL()
+      link.download = filename
+    }
+  }
+)
 
 socket.on('welcome', init)
 
