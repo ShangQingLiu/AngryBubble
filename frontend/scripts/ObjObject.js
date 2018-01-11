@@ -31,8 +31,11 @@ function ObjObject(filePath, _gl, _shaderProgram){
 
     this.draw = function (viewMatrix, projectionMatrix) {
         var normalMatrix = new Matrix4();
+        normalMatrix.setIdentity();
         var gl = this.gl;
 
+
+        console.log()
 
         gl.useProgram(this.program);
         normalMatrix.setInverseOf(this.modelMatrix);
@@ -177,8 +180,11 @@ function ObjObject(filePath, _gl, _shaderProgram){
                             currentElement.vertexNormals.push(normalVector[j]);
                         }
                     }
-                    for(var i = 1; i != 4; ++i){
-                        var positionVector = positionBuffer[indexVector[i*2] - 1];
+                    for(var i = 0; i != 3; ++i){
+                        let tempDic = [ 0, 2, 3];
+
+
+                        var positionVector = positionBuffer[indexVector[tempDic[i]*2] - 1];
                         for(var j = 0; j != 3; ++j){
                             currentElement.vertexPositions.push(positionVector[j]);
                             currentElement.vertexNormals.push(normalVector[j]);
