@@ -55,50 +55,50 @@ void main() {
     vec3 directionalLightDirection = normalize(uDirectionalLightDirection);
     vec4 textureColor = texture2D(uSampler, textureCoord);
 
-    vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
 
-    vec4 ambient = vec4(uAmbientLightColor*uKa, 1.0);
+    vec4 ambient = vec4(uAmbientLightColor*uKa*textureColor.xyz, 1.0);
     
     color = color + ambient;
 
     float diffuseFactor = dot(-pointLightDirection, vertexNormal);
-    vec4 diffuse = vec4(0.0, 0.0, 0.0, 1.0);
+    vec4 diffuse = vec4(0.0, 0.0, 0.0, 0.0);
     if ( diffuseFactor > 0.0 ) {
         diffuse = diffuseFactor*vec4(uPointLightColor*uKd*textureColor.xyz, 1.0);
     }  
     color = color + diffuse;
     
     diffuseFactor = dot(-directionalLightDirection, vertexNormal);
-    diffuse = vec4(0.0, 0.0, 0.0, 1.0);
+    diffuse = vec4(0.0, 0.0, 0.0, 0.0);
     if ( diffuseFactor > 0.0 ) {
         diffuse = diffuseFactor*vec4(uDirectionalLightColor*uKd*textureColor.xyz, 1.0);
     } 
     color = color + diffuse;
 
-    vec3 cameraPos = uPointLightingLocation;
+    // vec3 cameraPos = uPointLightingLocation;
+    //
+    // vec4 specular = vec4(0.0, 0.0, 0.0, 1.0);
+    // vec3 reflectLightDir = reflect(pointLightDirection, vertexNormal);  
+    // reflectLightDir= normalize(reflectLightDir);  
+    // vec3 vertexToCamera = cameraPos - vertexPosition.xyz;  
+    // vertexToCamera= normalize(vertexToCamera);  
+    // float specularFactor = dot(vertexToCamera, reflectLightDir);
+    // if (specularFactor > 0.0) {
+    //     specularFactor = pow(specularFactor, uNs);
+    //     specular = specularFactor*vec4(uPointLightColor, 1.0)*vec4(uKs, 1.0);
+    // }
+    // color = color + specular;
 
-    vec4 specular = vec4(0.0, 0.0, 0.0, 1.0);
-    vec3 reflectLightDir = reflect(pointLightDirection, vertexNormal);  
-    reflectLightDir= normalize(reflectLightDir);  
-    vec3 vertexToCamera = cameraPos - vertexPosition.xyz;  
-    vertexToCamera= normalize(vertexToCamera);  
-    float specularFactor = dot(vertexToCamera, reflectLightDir);
-    if (specularFactor > 0.0) {
-        specularFactor = pow(specularFactor, uNs);
-        specular = specularFactor*vec4(uPointLightColor, 1.0)*vec4(uKs, 1.0);
-    }
-    color = color + specular;
-
-    specular = vec4(0.0, 0.0, 0.0, 1.0);
-    reflectLightDir = reflect(directionalLightDirection, vertexNormal);
-    reflectLightDir= normalize(reflectLightDir);  
-    specularFactor = dot(vertexToCamera, reflectLightDir);
-    if (specularFactor > 0.0) {
-        specularFactor = pow (specularFactor, uNs);
-        specular = specularFactor*vec4(uDirectionalLightColor, 1.0)*vec4(uKs, 1.0);
-    }
-    color = color + specular;
-    gl_FragColor = clamp(color, 0.0, 1.0);
+    // specular = vec4(0.0, 0.0, 0.0, 1.0);
+    // reflectLightDir = reflect(directionalLightDirection, vertexNormal);
+    // reflectLightDir= normalize(reflectLightDir);  
+    // specularFactor = dot(vertexToCamera, reflectLightDir);
+    // if (specularFactor > 0.0) {
+    //     specularFactor = pow (specularFactor, uNs);
+    //     specular = specularFactor*vec4(uDirectionalLightColor, 1.0)*vec4(uKs, 1.0);
+    // }
+    // color = color + specular;
+    gl_FragColor = vec4(color.xyz, 1.0);
 }
 
 `;
@@ -294,7 +294,7 @@ function Scene(_canvas) {
 
         gl.uniformMatrix4fv(this.vsViewMatrix, false, viewMatrix.elements)
         gl.uniformMatrix4fv(this.vsProjectionMatrix, false, projectionMatrix.elements)
-        gl.uniform3f(this.uPointLightingLocation, currentUser.pos.x + 0.01, currentUser.pos.y + 0.01, currentUser.pos.z + 0.01)
+        gl.uniform3f(this.uPointLightingLocation, currentUser.pos.x + currentUser.radius *2, currentUser.pos.y + currentUser.radius*2, currentUser.pos.z + currentUser.radius*2)
         gl.uniform1f(this.lightFactor, lightIndensity)
 
 
@@ -306,10 +306,10 @@ function Scene(_canvas) {
         let uDirectionalLightColorObj = gl.getUniformLocation(this.objShaderProgram, "uDirectionalLightColor");
         let uAmbientLightColorObj = gl.getUniformLocation(this.objShaderProgram, "uAmbientLightColor");
 
-        gl.uniform3f(uPointLightingLocationObj,  currentUser.pos.x + 0.01, currentUser.pos.y + 0.01, currentUser.pos.z + 0.01);
-        gl.uniform3f(uPointLightColorObj, 0.4, 0.4, 0.4);
+        gl.uniform3f(uPointLightingLocationObj, currentUser.pos.x + currentUser.radius *2, currentUser.pos.y + currentUser.radius*2, currentUser.pos.z + currentUser.radius*2)
+        gl.uniform3f(uPointLightColorObj, 0.0, 0.0, 0.0);
         gl.uniform3f(uDirectionalLightDirectionObj, 0.5, 0.5, 0.5);
-        gl.uniform3f(uDirectionalLightColorObj, 0.4, 0.4, 0.4);
+        gl.uniform3f(uDirectionalLightColorObj, 0.3, 0.3, 0.3);
         gl.uniform3f(uAmbientLightColorObj, 0.4, 0.4, 0.4);
 
 

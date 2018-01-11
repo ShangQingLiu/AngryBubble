@@ -25,6 +25,10 @@ function ObjObject(filePath, _gl, _shaderProgram){
     this.uKs = _gl.getUniformLocation(this.program, 'uKs');
     this.uNs = _gl.getUniformLocation(this.program, 'uNs');
 
+    this.originalCenter = [];
+    this.radius = 1.0;
+    this.position = [1.0, 1.0, 1.0];
+    this.basicScaleMatrix = new Matrix4();
 
     this.modelMatrix = new Matrix4();
     this.modelMatrix.setRotate(270, 1, 0, 0);
@@ -35,13 +39,26 @@ function ObjObject(filePath, _gl, _shaderProgram){
         var gl = this.gl;
 
 
-        console.log()
-
         gl.useProgram(this.program);
         normalMatrix.setInverseOf(this.modelMatrix);
         normalMatrix.transpose();
 
-        gl.uniformMatrix4fv(this.uModelMatrix, false, this.modelMatrix.elements);
+        let modelMatrix = this.modelMatrix;
+
+        modelMatrix.setIdentity();
+
+        modelMatrix.translate(this.position[0] ,this.position[1] ,this.position[2]);
+
+        modelMatrix.scale(this.radius, this.radius, this.radius);
+
+        modelMatrix.translate(- this.originalCenter[0], - this.originalCenter[1], - this.originalCenter[2]);
+
+        modelMatrix.multiply(this.basicScaleMatrix);
+
+
+
+
+        gl.uniformMatrix4fv(this.uModelMatrix, false, modelMatrix.elements);
         gl.uniformMatrix4fv(this.uViewMatrix, false, viewMatrix.elements);
         gl.uniformMatrix4fv(this.uProjectionMatrix, false, projectionMatrix.elements);
         gl.uniformMatrix4fv(this.uNormalMatrix, false, normalMatrix.elements);
@@ -124,6 +141,44 @@ function ObjObject(filePath, _gl, _shaderProgram){
 
     var n = lines.length;
     var index = 0;
+
+    let minX = 1000, maxX = -1000, minY = 1000, maxY = -1000, minZ = 1000, maxZ = -1000;
+    function getBorder(newPosition){
+        if(minX > newPosition[0]){
+            minX = newPosition[0];
+        }
+
+        if(maxX < newPosition[0]){
+            maxX = newPosition[0];
+        }
+
+        if(minY > newPosition[1]){
+            minY = newPosition[1];
+        }
+
+        if(maxY < newPosition[1]){
+            maxY = newPosition[1];
+        }
+
+        if(minZ > newPosition[2]){
+            minZ = newPosition[2];
+        }
+
+        if(maxZ < newPosition[2]){
+            maxZ = newPosition[2];
+        }
+
+    }
+
+
+    this.setPosition = function(x, y, z){
+        this.position = [x, y, z];
+    };
+
+    this.setRadius = function(r){
+        this.radius = r;
+    };
+
     for(index = 0; index != n; ++index){
         var line = lines[index];
         switch (getType(line)){
@@ -133,7 +188,9 @@ function ObjObject(filePath, _gl, _shaderProgram){
                 mtls = getMtls(line, dirPath);
                 continue;
             case POSITIONLINE:
-                positionBuffer.push(getVector(line));
+                let tempPosition = getVector(line);
+                getBorder(tempPosition);
+                positionBuffer.push(tempPosition);
                 continue;
             case COORDSLINE:
                 coordsBuffer.push(getVector(line));
@@ -149,9 +206,22 @@ function ObjObject(filePath, _gl, _shaderProgram){
         break;
     }
 
+
+    console.log(minX, minY, minZ, maxX, maxY, maxZ);
+
+    let detaX = maxX - minX, detaY = maxY - minY, detaZ = maxZ - minZ;
+
+    let deta = detaX < detaY ? (detaX < detaZ ? detaX : detaZ) : (detaY < detaZ ? detaY : detaZ);
+
+    this.originalCenter = [(maxX + minX) / 2*deta/detaX, (maxY + minY)/ 2*deta/detaY, (maxZ + minZ)/ 2*deta/detaZ]
+    this.radius = deta;
+    this.basicScaleMatrix.setScale(deta/detaX, deta/detaY,deta/detaZ);
+
+
+
+
     var isUseTexture = coordsBuffer.length != 0;
     var isGiveNormal = normalBuffer.length != 0;
-
 
     for(;index!=n;++index){
         var line = lines[index];
