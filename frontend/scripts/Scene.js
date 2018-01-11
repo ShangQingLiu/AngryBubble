@@ -126,14 +126,9 @@ uniform mat4 vsNormalMatrix;
 varying vec4 vertexPosition;
 varying vec3 normal;
 
-uniform vec3 uPointLightingLocation;
-
-varying vec3 lightDirection;
-
 void main() {
     normal = normalize(vec3(vsNormalMatrix * vec4(vsNormal, 1.0)));
     vertexPosition = vsModelMatrix * vec4(vsPosition, 1.0);
-    lightDirection = normalize(uPointLightingLocation - vertexPosition.xyz);
     gl_Position = vsProjectionMatrix * vsViewMatrix * vertexPosition;
 }
 `
@@ -147,14 +142,18 @@ uniform vec3 fsAmbientLight;
 uniform vec4 fsKa;
 
 uniform float lightFactor;
+uniform vec3 uPointLightingLocation;
 
 varying vec4 vertexPosition;
 varying vec3 normal;
 
 varying vec3 vLightWeighting;
-varying vec3 lightDirection;
 
 void main() {
+
+    vec3 lightDirection = normalize(uPointLightingLocation - vertexPosition.xyz);
+
+
     float pointLight = dot(normal, lightDirection);
     vec3 ambient = fsAmbientLight * vec3(fsKa);
     vec3 lightened = (ambient + pointLight) * lightFactor * fsKa.a;
@@ -308,9 +307,9 @@ function Scene(_canvas) {
 
         gl.uniform3f(uPointLightingLocationObj, currentUser.pos.x + currentUser.radius *2, currentUser.pos.y + currentUser.radius*2, currentUser.pos.z + currentUser.radius*2)
         gl.uniform3f(uPointLightColorObj, 0.0, 0.0, 0.0);
-        gl.uniform3f(uDirectionalLightDirectionObj, 0.5, 0.5, 0.5);
-        gl.uniform3f(uDirectionalLightColorObj, 0.3, 0.3, 0.3);
-        gl.uniform3f(uAmbientLightColorObj, 0.4, 0.4, 0.4);
+        gl.uniform3f(uDirectionalLightDirectionObj, 0.8, 0.8, 0.8);
+        gl.uniform3f(uDirectionalLightColorObj, 0.8, 0.8, 0.8);
+        gl.uniform3f(uAmbientLightColorObj, 0.2, 0.2, 0.2);
 
 
         this.rock.draw(viewMatrix, projectionMatrix);
@@ -373,7 +372,7 @@ function Scene(_canvas) {
     this.textureBorder = new TextureBorder(20, './scripts/resources/background.jpg', gl, this.textureShaderProgram)
     this.userBalls = []
     this.rocks = [];
-    this.rock = new ObjObject('./scripts/resources/Rock.obj', gl, this.objShaderProgram);
+    this.rock = new ObjObject('./scripts/resources/stone.obj', gl, this.objShaderProgram);
     this.foodBalls = []
 
     this.canvas.onmousedown = onMouseDown
