@@ -3,76 +3,80 @@ const USEMTLLINE = 5, FACELINE = 6;
 const NEWMTLLINE = 7, KALINE  = 8, KDLINE = 9, KSLINE = 10, MAP_KD_LINE = 11;
 const NSLINE = 12;
 
-function Obj(filepath, glObject){
-    this.basicElements = [];
-    this.gl = glObject;
-    this.vsModelMatrix = glObject.getUniformLocation(glObject.program, 'vsModelMatrix');
-    this.vsMvpMatrix = glObject.getUniformLocation(glObject.program, 'vsMvpMatrix');
-    this.vsNormalMatrix = glObject.getUniformLocation(glObject.program, 'vsNormalMatrix');
+$.ajaxSettings.ajax = false;
 
-    this.vsKa = glObject.getUniformLocation(glObject.program, 'vsKa');
-    this.vsKd = glObject.getUniformLocation(glObject.program, 'vsKd');
-    this.vsKs = glObject.getUniformLocation(glObject.program, 'vsKs');
-
-    this.vsPosition = glObject.getAttribLocation(glObject.program, 'vsPosition');
-    this.vsNormal  = glObject.getAttribLocation(glObject.program, 'vsNormal');
-
+function ObjObject(filepath, _gl, _shaderProgram){
+     this.basicElements = [];
+    // this.program = _shaderProgram;
+    // this.gl = _gl;
+    // this.vsModelMatrix = _gl.getUniformLocation(this.program, 'vsModelMatrix');
+    // this.vsMvpMatrix = _gl.getUniformLocation(this.program, 'vsMvpMatrix');
+    // this.vsNormalMatrix = _gl.getUniformLocation(this.program, 'vsNormalMatrix');
+    //
+    // this.vsKa = _gl.getUniformLocation(this.program, 'vsKa');
+    // this.vsKd = _gl.getUniformLocation(this.program, 'vsKd');
+    // this.vsKs = _gl.getUniformLocation(this.program, 'vsKs');
+    //
+    // this.vsPosition = _gl.getAttribLocation(this.program, 'vsPosition');
+    // this.vsNormal  = _gl.getAttribLocation(this.program, 'vsNormal');
+    //
 
     this.modelMatrix = new Matrix4();
     this.modelMatrix.setRotate(270, 1, 0, 0);
 
-    this.draw = function (eyeMatrix) {
-        var mvpMatrix = new Matrix4(eyeMatrix);
-        var normalMatrix = new Matrix4();
-        var gl = this.gl;
 
-        mvpMatrix.multiply(this.modelMatrix);
-        normalMatrix.setInverseOf(this.modelMatrix);
-        normalMatrix.transpose();
-
-        gl.uniformMatrix4fv(this.vsModelMatrix, false, this.modelMatrix.elements);
-        gl.uniformMatrix4fv(this.vsMvpMatrix, false, mvpMatrix.elements);
-        gl.uniformMatrix4fv(this.vsNormalMatrix, false, normalMatrix.elements);
-
-
-        for(var i = 0; i != this.basicElements.length; ++i){
-            console.log("start draw element")
-            console.log()
-
-
-
-
-
-            var basicElement = this.basicElements[i];
-            var mtl = basicElement.mtl;
-
-
-            gl.uniform3f(this.vsKa, mtl.Ka[0], mtl.Ka[1], mtl.Ka[2]);
-            gl.uniform3f(this.vsKd, mtl.Kd[0], mtl.Kd[1], mtl.Kd[2]);
-            gl.uniform3f(this.vsKs, mtl.Ks[0], mtl.Ks[1], mtl.Ks[2]);
-
-
-            gl.bindBuffer(gl.ARRAY_BUFFER, basicElement.positionBufferHandle);
-            gl.bufferData(gl.ARRAY_BUFFER, basicElement.positionData, gl.STATIC_DRAW);
-            gl.vertexAttribPointer(this.vsPosition, 3, gl.FLOAT, false, 0, 0);
-            gl.enableVertexAttribArray(this.vsPosition);  // Enable the assignment of the buffer object
-
-
-            gl.bindBuffer(gl.ARRAY_BUFFER, basicElement.normalBufferHandle);
-            gl.bufferData(gl.ARRAY_BUFFER, basicElement.normalData, gl.STATIC_DRAW);
-            gl.vertexAttribPointer(this.vsNormal, 3, gl.FLOAT, false, 0, 0);
-            gl.enableVertexAttribArray(this.vsNormal);  // Enable the assignment of the buffer object
-
-
-            gl.drawArrays(gl.TRIANGLES, 0, basicElement.vertexNum);
-
-            gl.bindBuffer(gl.ARRAY_BUFFER, null);
-
-        }
-
-
-    };
-
+    // this.draw = function (eyeMatrix) {
+    //     var mvpMatrix = new Matrix4(eyeMatrix);
+    //     var normalMatrix = new Matrix4();
+    //     var gl = this.gl;
+    //
+    //     mvpMatrix.multiply(this.modelMatrix);
+    //     normalMatrix.setInverseOf(this.modelMatrix);
+    //     normalMatrix.transpose();
+    //
+    //     gl.uniformMatrix4fv(this.vsModelMatrix, false, this.modelMatrix.elements);
+    //     gl.uniformMatrix4fv(this.vsMvpMatrix, false, mvpMatrix.elements);
+    //     gl.uniformMatrix4fv(this.vsNormalMatrix, false, normalMatrix.elements);
+    //
+    //
+    //     for(var i = 0; i != this.basicElements.length; ++i){
+    //         console.log("start draw element")
+    //         console.log()
+    //
+    //
+    //
+    //
+    //
+    //         var basicElement = this.basicElements[i];
+    //         var mtl = basicElement.mtl;
+    //
+    //
+    //         gl.uniform3f(this.vsKa, mtl.Ka[0], mtl.Ka[1], mtl.Ka[2]);
+    //         gl.uniform3f(this.vsKd, mtl.Kd[0], mtl.Kd[1], mtl.Kd[2]);
+    //         gl.uniform3f(this.vsKs, mtl.Ks[0], mtl.Ks[1], mtl.Ks[2]);
+    //
+    //
+    //         gl.bindBuffer(gl.ARRAY_BUFFER, basicElement.positionBufferHandle);
+    //         gl.bufferData(gl.ARRAY_BUFFER, basicElement.positionData, gl.STATIC_DRAW);
+    //         gl.vertexAttribPointer(this.vsPosition, 3, gl.FLOAT, false, 0, 0);
+    //         gl.enableVertexAttribArray(this.vsPosition);  // Enable the assignment of the buffer object
+    //
+    //
+    //         gl.bindBuffer(gl.ARRAY_BUFFER, basicElement.normalBufferHandle);
+    //         gl.bufferData(gl.ARRAY_BUFFER, basicElement.normalData, gl.STATIC_DRAW);
+    //         gl.vertexAttribPointer(this.vsNormal, 3, gl.FLOAT, false, 0, 0);
+    //         gl.enableVertexAttribArray(this.vsNormal);  // Enable the assignment of the buffer object
+    //
+    //
+    //         gl.drawArrays(gl.TRIANGLES, 0, basicElement.vertexNum);
+    //
+    //         gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    //
+    //     }
+    //
+    //
+    // };
+    //
 
     var objStr;
     var tempDir = filepath.split('/');
@@ -130,25 +134,45 @@ function Obj(filepath, glObject){
                     this.basicElements.push(currentElement);
                 }
                 var mtlName = getSecondStr(line);
-                currentElement = new BasicElement(glObject);
+                currentElement = new BasicElement(_gl);
                 currentElement.mtl = mtls[mtlName];
                 continue;
             case FACELINE:
                 var indexVector = getVector(line);
                 if(isUseTexture){
-                    console.log("This function is dealing with the this without texture");
-                    break;
-                }
-                if(isGiveNormal){
+                    var position0 = positionBuffer[indexVector[0] - 1];
+                    var position1 = positionBuffer[indexVector[2] - 1];
+                    var position2 = positionBuffer[indexVector[4] - 1];
+
+
+                    var normalVector = getNormal(position0, position1, position2);
                     for(var i = 0; i != 3; ++i){
-                        var positionVector = positionBuffer[indexVector[i*2] - 1];
-                        var normalVector = normalBuffer[indexVector[i*2+1] - 1];
+                        var positionVector = positionBuffer[indexVector[i] - 1];
                         for(var j = 0; j != 3; ++j){
                             currentElement.vertexPositions.push(positionVector[j]);
                             currentElement.vertexNormals.push(normalVector[j]);
                         }
                     }
+
+                    for (var i = 0; i != 3; ++i){
+                        var coords = coordsBuffer[indexVector[i*2 + 1] - 1];
+                        for(var j = 0; j != 2; ++j){
+                            currentElement.textureCoords.push(coords[j]);
+                        }
+                    }
+
+
                 }
+                // if(isGiveNormal){
+                //     for(var i = 0; i != 3; ++i){
+                //         var positionVector = positionBuffer[indexVector[i*2] - 1];
+                //         var normalVector = normalBuffer[indexVector[i*2+1] - 1];
+                //         for(var j = 0; j != 3; ++j){
+                //             currentElement.vertexPositions.push(positionVector[j]);
+                //             currentElement.vertexNormals.push(normalVector[j]);
+                //         }
+                //     }
+                // }
                 else{
                     var position0 = positionBuffer[indexVector[0] - 1];
                     var position1 = positionBuffer[indexVector[1] - 1];
@@ -299,8 +323,12 @@ function getMtls(line, dirPath){
             case KALINE:
                 currentMtl.Ka = getVector(line);
                 continue;
+            case NSLINE:
+                currentMtl.Ns = parseFloat(getSecondStr(line));
+                continue;
             case MAP_KD_LINE:
                 currentMtl.map_Kd = getSecondStr(line);
+                continue;
         }
     }
     mtls[currentMtlName] = currentMtl;
@@ -310,19 +338,21 @@ function getMtls(line, dirPath){
 function BasicElement(gl) {
     this.vertexPositions = [];
     this.positionData = null;
-    this.tuxtureCoords = [];
+    this.textureCoords = [];
+    this.textureCoordData = null;
     this.vertexNormals = [];
     this.normalData = null;
     this.mtl = new MTLInfo();
     this.vertexNum = 0;
     this.positionBufferHandle = null;
     this.normalBufferHandle = null;
-    this.positionBufferHandle = gl.createBuffer();
-    this.normalBufferHandle = gl.createBuffer();
+    //this.positionBufferHandle = gl.createBuffer();
+    //this.normalBufferHandle = gl.createBuffer();
 
     this.prepareData = function () {
         this.positionData = new Float32Array(this.vertexPositions);
         this.normalData = new Float32Array(this.vertexNormals);
+        this.textureCoordData = new Float32Array(this.textureCoords);
         this.vertexNum = this.vertexPositions.length / 3;
     }
 }
@@ -331,6 +361,7 @@ function MTLInfo() {
     this.Ka = [0.0, 0.0, 0.0];
     this.Ks = [0.0, 0.0, 0.0];
     this.Kd = [1.0, 1.0, 1.0];
+    this.Ns = 1.0;
     this.map_Kd = "";
 }
 

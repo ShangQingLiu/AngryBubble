@@ -51,7 +51,7 @@ function Ball(GL, shaderProgram, slice) {
                 pass.normalize();
                 //push position
                 positionArray.push(tmp[(k + col) * 3], tmp[(k + col) * 3 + 1], tmp[(k + col) * 3 + 2]);
-                //push color
+                //push colorf
                 //push normalize
                 normalArray.push(pass.elements[0], pass.elements[1], pass.elements[2]);
 
