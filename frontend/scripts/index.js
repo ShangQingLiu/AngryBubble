@@ -2,6 +2,40 @@ const socket = io()
 
 let users = []
 let foods = []
+const stone = [
+  {
+    pos: {
+      x: 2,
+      y: 7,
+      z: 3
+    },
+    radius: 0.3
+  },
+  {
+    pos: {
+      x: 4,
+      y: 5,
+      z: 4
+    },
+    radius: 0.3
+  },
+  {
+    pos: {
+      x: 1,
+      y: 5,
+      z: 8
+    },
+    radius: 0.3
+  },
+  {
+    pos: {
+      x: 3,
+      y: 2,
+      z: 9
+    },
+    radius: 0.3
+  }
+]
 let currentUser
 const canvas = document.getElementById('main')
 canvas.height = window.innerHeight
@@ -54,8 +88,10 @@ function onKeyDown(event) {
   }
   // update(users)
   socket.emit('move', tmpUser)
-  checkFoods(tmpUser)
-  checkUsers(tmpUser)
+  if (!checkCollision(tmpUser)) {
+    checkFoods(tmpUser)
+    checkUsers(tmpUser)
+  }
   console.log(tmpUser)
 }
 
@@ -135,4 +171,8 @@ function updateRank() {
     nameCell.appendChild(name)
     radiusCell.appendChild(radius)
   })
+}
+
+function checkCollision(user) {
+
 }
