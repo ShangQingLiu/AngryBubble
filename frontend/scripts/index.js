@@ -93,12 +93,14 @@ function onKeyDown(event) {
   const tmpUser = JSON.parse(JSON.stringify(currentUser))
   switch (event.key) {
     case 'w':
-      // tmpUser.pos.y += 0.1
       tmpUser.pos = nextPositionToward(1)
+      if (checkCollision(tmpUser))
+        currentUser.pos = nextPositionToward(-2)
       break
     case 's':
-      // tmpUser.pos.y -= 0.1
       tmpUser.pos = nextPositionToward(-1)
+      if (checkCollision(tmpUser))
+        currentUser.pos = nextPositionToward(2)
       break
     case 'a':
       tmpUser.pos.x -= 0.1
@@ -110,8 +112,8 @@ function onKeyDown(event) {
       break
   }
   // update(users)
-  socket.emit('move', tmpUser)
   if (!checkCollision(tmpUser)) {
+    socket.emit('move', tmpUser)
     checkFoods(tmpUser)
     checkUsers(tmpUser)
   }
@@ -199,6 +201,7 @@ function updateRank() {
 
 function checkCollision(user) {
   for (const s of stone) {
+    console.log(s)
     if ((
         Math.pow(user.pos.x - s.pos.x, 2) +
         Math.pow(user.pos.y - s.pos.y, 2) +
