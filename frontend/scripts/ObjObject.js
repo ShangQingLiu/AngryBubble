@@ -214,7 +214,7 @@ function ObjObject(filePath, _gl, _shaderProgram){
     let deta = detaX < detaY ? (detaX < detaZ ? detaX : detaZ) : (detaY < detaZ ? detaY : detaZ);
 
     this.originalCenter = [(maxX + minX) / 2*deta/detaX, (maxY + minY)/ 2*deta/detaY, (maxZ + minZ)/ 2*deta/detaZ]
-    this.radius = deta;
+    //this.radius = deta;
     this.basicScaleMatrix.setScale(deta/detaX, deta/detaY,deta/detaZ);
 
 
@@ -222,6 +222,11 @@ function ObjObject(filePath, _gl, _shaderProgram){
 
     var isUseTexture = coordsBuffer.length != 0;
     var isGiveNormal = normalBuffer.length != 0;
+
+
+    console.log(positionBuffer);
+    console.log(coordsBuffer);
+    console.log(normalBuffer);
 
     for(;index!=n;++index){
         var line = lines[index];
@@ -237,44 +242,80 @@ function ObjObject(filePath, _gl, _shaderProgram){
             case FACELINE:
                 var indexVector = getVector(line);
                 if(isUseTexture){
-                    var position0 = positionBuffer[indexVector[0] - 1];
-                    var position1 = positionBuffer[indexVector[2] - 1];
-                    var position2 = positionBuffer[indexVector[4] - 1];
-                    var position4 = positionBuffer[indexVector[6] - 1];
+                    if(!isGiveNormal){
+                        var position0 = positionBuffer[indexVector[0] - 1];
+                        var position1 = positionBuffer[indexVector[2] - 1];
+                        var position2 = positionBuffer[indexVector[4] - 1];
+                        var position4 = positionBuffer[indexVector[6] - 1];
 
-                    var normalVector = getNormal(position0, position1, position2);
-                    for(var i = 0; i != 3; ++i){
-                        var positionVector = positionBuffer[indexVector[i*2] - 1];
-                        for(var j = 0; j != 3; ++j){
-                            currentElement.vertexPositions.push(positionVector[j]);
-                            currentElement.vertexNormals.push(normalVector[j]);
+                        var normalVector = getNormal(position0, position1, position2);
+                        for(var i = 0; i != 3; ++i){
+                            var positionVector = positionBuffer[indexVector[i*2] - 1];
+                            for(var j = 0; j != 3; ++j){
+                                currentElement.vertexPositions.push(positionVector[j]);
+                                currentElement.vertexNormals.push(normalVector[j]);
+                            }
+                        }
+                        for(var i = 0; i != 3; ++i){
+                            let tempDic = [ 0, 2, 3];
+
+
+                            var positionVector = positionBuffer[indexVector[tempDic[i]*2] - 1];
+                            for(var j = 0; j != 3; ++j){
+                                currentElement.vertexPositions.push(positionVector[j]);
+                                currentElement.vertexNormals.push(normalVector[j]);
+                            }
+                        }
+
+                        for (var i = 0; i != 3; ++i){
+                            var coords = coordsBuffer[indexVector[i*2 + 1] - 1];
+                            for(var j = 0; j != 2; ++j){
+                                currentElement.textureCoords.push(coords[j]);
+                            }
+                        }
+                        for (var i = 1; i != 4; ++i){
+                            var coords = coordsBuffer[indexVector[i*2 + 1] - 1];
+                            for(var j = 0; j != 2; ++j){
+                                currentElement.textureCoords.push(coords[j]);
+                            }
+                        }
+
+
+                    }
+                    else{
+                        for(var i = 0; i != 3; ++i){
+                            var positionVector = positionBuffer[indexVector[i*3] - 1];
+                            var coordVector = coordsBuffer[indexVector[i*3+1] - 1];
+                            var normalVector = normalBuffer[indexVector[i*3+2] - 1];
+
+                            for(var j = 0; j != 3; ++j){
+                                currentElement.vertexPositions.push(positionVector[j]);
+                                currentElement.vertexNormals.push(normalVector[j]);
+                            }
+                            for(var j = 0; j != 2; ++j){
+                                currentElement.textureCoords.push(coordVector[j]);
+                            }
+
+                        }
+
+                        if(indexVector.length  == 12){
+                            for(var i = 0; i != 3; ++i){
+                                let tempDic = [ 0, 2, 3];
+                                let index = tempDic[i];
+                                var positionVector = positionBuffer[indexVector[index*3] - 1];
+                                var coordVector = coordsBuffer[indexVector[index*3+1] - 1];
+                                var normalVector = normalBuffer[indexVector[index*3+2] - 1];
+
+                                for(var j = 0; j != 3; ++j){
+                                    currentElement.vertexPositions.push(positionVector[j]);
+                                    currentElement.vertexNormals.push(normalVector[j]);
+                                }
+                                for(var j = 0; j != 2; ++j){
+                                    currentElement.textureCoords.push(coordVector[j]);
+                                }
+                            }
                         }
                     }
-                    for(var i = 0; i != 3; ++i){
-                        let tempDic = [ 0, 2, 3];
-
-
-                        var positionVector = positionBuffer[indexVector[tempDic[i]*2] - 1];
-                        for(var j = 0; j != 3; ++j){
-                            currentElement.vertexPositions.push(positionVector[j]);
-                            currentElement.vertexNormals.push(normalVector[j]);
-                        }
-                    }
-
-                    for (var i = 0; i != 3; ++i){
-                        var coords = coordsBuffer[indexVector[i*2 + 1] - 1];
-                        for(var j = 0; j != 2; ++j){
-                            currentElement.textureCoords.push(coords[j]);
-                        }
-                    }
-                    for (var i = 1; i != 4; ++i){
-                        var coords = coordsBuffer[indexVector[i*2 + 1] - 1];
-                        for(var j = 0; j != 2; ++j){
-                            currentElement.textureCoords.push(coords[j]);
-                        }
-                    }
-
-
                 }
                 // if(isGiveNormal){
                 //     for(var i = 0; i != 3; ++i){
