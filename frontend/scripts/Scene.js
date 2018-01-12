@@ -372,10 +372,6 @@ function Scene(_canvas) {
         for (let i = 0; i != foods.length; ++i) {
             this.foodBalls[i].draw(viewMatrix, projectionMatrix)
         }
-        gl.depthMask(true);
-        for (var i = 0; i != users.length; ++i) {
-            this.userBalls[i].draw(viewMatrix, projectionMatrix)
-        }
 
         for( let i = 0; i != stone.length; ++i){
             for (let i = 0; i != stone.length; ++i) {
@@ -385,6 +381,11 @@ function Scene(_canvas) {
             }
         }
 
+
+        gl.depthMask(true);
+        for (var i = 0; i != users.length; ++i) {
+            this.userBalls[i].draw(viewMatrix, projectionMatrix)
+        }
         gl.depthMask(true);
 
 
