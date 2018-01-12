@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Angry Bubble</title>
+    <link rel="stylesheet" href="styles/materialize.min.css"/>
+    <link rel="stylesheet" href="styles/main.css"/>
+</head>
+<body style="margin: 0;">
+<div id="cover">
+    <div id="login">
+        <p style="text-align: center; font-size: 32px">ANGRY BUBBLE</p>
+        <input id="input" placeholder="请输入昵称..." type="text" style="text-align: center">
+    </div>
+</div>
+<div id="panel" style="visibility: hidden;">
+    <div style="width: 200px;display: flex; justify-content: center; text-align: center;">
+        <a id="save" class="btn" style="margin: 10px;">保存场景</a>
+    </div>
+    <div id="users" style="width: 200px;">
+        <table id="users-table" class="striped">
+            <tbody id="users-rank">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="modal1" class="modal">
+    <div class="modal-content">
+        <h4>Unfortunately</h4>
+        <p>You've been eaten...</p>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
+    </div>
+</div>
+<canvas id="main"></canvas>
+<script src="scripts/lib/jquery-3.2.1.js"></script>
+<script src="scripts/lib/materialize.min.js"></script>
+<script src="scripts/lib/socket.io.js"></script>
+<script src="scripts/lib/webgl-debug.js"></script>
+<script src="scripts/lib/webgl-utils.js"></script>
+<script src="scripts/lib/cuon-matrix.js"></script>
+<!--<script src="scripts/lib/three.min.js"></script>-->
+<script src="scripts/index.js"></script>
+<script src="scripts/SceneWithMat.js"></script>
+<script src="scripts/textureBorder.js"></script>
+<script src="scripts/ObjObject.js"></script>
+<script src="scripts/addmerching.js"></script>
+<script src="scripts/addBall.js"></script>
+<script src="scripts/graphics.js"></script>
+<script src="scripts/loadObj.js"></script>
+</body>
+</html>

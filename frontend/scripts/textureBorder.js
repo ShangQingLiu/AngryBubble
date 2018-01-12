@@ -132,7 +132,7 @@ function TextureBorder(bound, imageSrc, glObject, textureShaderProgram) {
         gl.useProgram(this.program)
         gl.uniformMatrix4fv(this.uMvpMatrix, false, mvpMatrix.elements)
 
-        const light = 0.6
+        const light = 0.8
 
         gl.uniform4f(this.uKa, light, light, light, 1.0)
 

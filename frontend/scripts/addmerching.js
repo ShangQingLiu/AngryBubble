@@ -2,119 +2,39 @@ let tempPositionData;
 let tempNormalData;
 let tempVertexNum;
 let faces = [];
-
-
+let __tmpVertices ;
+let myfaces = [];
 
 
 
 function Merching(GL, shaderProgram) {
-    this.gl = GL;
+    this.gl = GL
 
-    this.modelMatrix = new Matrix4();
-    this.positionBufferHandle = GL.createBuffer();
-    this.normalBufferHandle = GL.createBuffer();
-    this.positionData = null;
-    this.normalData = null;
-    this.aPosition = GL.getAttribLocation(shaderProgram, 'aPosition');
-    this.aNormal = GL.getAttribLocation(shaderProgram, 'aNormal');
-    this.uModelMatrix = GL.getUniformLocation(shaderProgram, 'uModelMatrix');
-    this.uNormalMatrix = GL.getUniformLocation(shaderProgram, 'uNormalMatrix');
-    this.program = shaderProgram;
+    this.modelMatrix = new Matrix4()
+    this.positionBufferHandle = GL.createBuffer()
+    this.normalBufferHandle = GL.createBuffer()
+    this.positionData = null
+    this.normalData = null
+    this.aPosition = GL.getAttribLocation(shaderProgram, 'aPosition')
+    this.aNormal = GL.getActiveAttrib(shaderProgram, 'aNormal')
+    this.uModelMatrix = GL.getUniformLocation(shaderProgram, 'uModelMatrix')
+    this.uViewMatrix = GL.getUniformLocation(shaderProgram, 'uViewMatrix')
+    this.uProjectionMatrix = GL.getUniformLocation(shaderProgram, 'uProjectionMatrix')
+    this.uNormalMatrix = GL.getUniformLocation(shaderProgram, 'uNormalMatrix')
 
+    this.program = shaderProgram
 
-    this.uKa = GL.getUniformLocation(shaderProgram, 'uKa');
+    this.uKa = GL.getUniformLocation(shaderProgram, 'uKa')
+    this.uKd = GL.getUniformLocation(shaderProgram, 'uKd')
+    this.uKs = GL.getUniformLocation(shaderProgram, 'uKs')
+    this.uNs = GL.getUniformLocation(shaderProgram, 'uNs')
+    this.uAlpha = GL.getUniformLocation(shaderProgram, 'uAlpha')
 
-    this.color = [1.0, 1.0, 1.0, 1.0];
-    this.position = [0.0,0.0,0.0];
-    this.radius = 1;
-
-    let positionArray = new Array();
-    let normalArray = new Array();
-
-    let slice = 1;
-    let radius = 1.0;
-    var angleSpan = 45.0 / slice;
-    var tmp = new Array();
-    for (var i = -90; i <= 90; i += angleSpan) {
-        for (var j = 0; j <= 360; j += angleSpan) {
-            var r = radius * Math.cos(radians(i));
-            var x = r * Math.cos(radians(j));
-            var y = radius * Math.sin(radians(i));
-            var z = r * Math.sin(radians(j));
-            tmp.push(x);
-            tmp.push(y);
-            tmp.push(z);
-        }
-    }
-
-    var row = parseInt(180 / angleSpan) + 1;
-    var col = parseInt(360 / angleSpan) + 1;
-    var k = col * (row - 2) * 6 * 8;  //!!
-    var count = 0;
-    for (var i = 0; i < row; i++) {
-        if (i != 0 && i != row - 1) {
-            for (var j = 0; j < col; j++) {
-                k = i * col + j;
-                //time1
-                var pass = new Vector3([tmp[(k + col) * 3], tmp[(k + col) * 3 + 1], tmp[(k + col) * 3 + 2]]);
-                pass.normalize();
-                //push position
-                positionArray.push(tmp[(k + col) * 3], tmp[(k + col) * 3 + 1], tmp[(k + col) * 3 + 2]);
-                //push colorf
-                //push normalize
-                normalArray.push(pass.elements[0], pass.elements[1], pass.elements[2]);
-
-                var index = k + 1;
-                if (j == (col - 1))
-                    index -= col;
-                //time2
-                pass = new Vector3([tmp[index * 3], tmp[index * 3 + 1], tmp[index * 3 + 2]]);
-                pass.normalize();
-                //push position
-                positionArray.push(tmp[index * 3], tmp[index * 3 + 1], tmp[index * 3 + 2]);
-                //push color
-                //push normalize
-                normalArray.push(pass.elements[0], pass.elements[1], pass.elements[2]);
-
-                //time3
-                pass = new Vector3([tmp[k * 3], tmp[k * 3 + 1], tmp[k * 3 + 2]]);
-                pass.normalize();
-                //push position
-                positionArray.push(tmp[k * 3], tmp[k * 3 + 1], tmp[k * 3 + 2]);
-                //push color
-                //push normalize
-                normalArray.push(pass.elements[0], pass.elements[1], pass.elements[2]);
-            }
-            for (var j = 0; j < col; j++) {
-                k = i * col + j;
-                //time4
-                pass = new Vector3([tmp[(k - col) * 3], tmp[(k - col) * 3 + 1], tmp[(k - col) * 3 + 2]]);
-                pass.normalize();
-                positionArray.push(tmp[(k - col) * 3], tmp[(k - col) * 3 + 1], tmp[(k - col) * 3 + 2]);
-                normalArray.push(pass.elements[0], pass.elements[1], pass.elements[2]);
-
-                var index = k - 1;
-                if ((j == 0))
-                    index += col;
-                //time5
-                pass = new Vector3([tmp[index * 3], tmp[index * 3 + 1], tmp[index * 3 + 2]]);
-                pass.normalize();
-                positionArray.push(tmp[index * 3], tmp[index * 3 + 1], tmp[index * 3 + 2]);
-                normalArray.push(pass.elements[0], pass.elements[1], pass.elements[2]);
-                //time6
-                pass = new Vector3([tmp[k * 3], tmp[k * 3 + 1], tmp[k * 3 + 2]]);
-                pass.normalize();
-                positionArray.push(tmp[k * 3], tmp[k * 3 + 1], tmp[k * 3 + 2]);
-                normalArray.push(pass.elements[0], pass.elements[1], pass.elements[2]);
-            }
-        }
-    }
-
-    this.positionData = new Float32Array(positionArray);
-    this.normalData = new Float32Array(normalArray);
-    this.vertexNum = normalArray.length / 3;
-
-
+    this.color = [1.0, 1.0, 1.0, 1.0]
+    this.position = [0.0, 0.0, 0.0]
+    this.radius = 1
+    this.alpha = 1.0
+    this.ns = 0.7
 
     var edgeTable = new Int32Array([
         0x0, 0x109, 0x203, 0x30a, 0x406, 0x50f, 0x605, 0x70c,
@@ -409,9 +329,12 @@ function Merching(GL, shaderProgram) {
         0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]);
 
-    this.connectBall = function (radius1, center1, radius2, center2) {
+    this.connectBall = function (radius1, center1, radius2, center2, base, range) {//, radius3, center3
+
+
+        myfaces = [];
         faces = [];
-        var size = 30;
+        var size = 35;
         var size3 = size * size * size;
         var axisMin = -5;
         var axisMax = 5;
@@ -423,9 +346,9 @@ function Merching(GL, shaderProgram) {
                 for (var i = 0; i < size; i++) {
                     // actual values
 
-                    var x = axisMin + axisRange * i / (size - 1);
-                    var y = axisMin + axisRange * j / (size - 1);
-                    var z = axisMin + axisRange * k / (size - 1);
+                    var x = base.x + range * i / (size - 1);
+                    var y = base.y + range * j / (size - 1);
+                    var z = base.z + range * k / (size - 1);
                     var v = new Float32Array(3);
                     v[0] = x;
                     v[1] = y;
@@ -439,9 +362,12 @@ function Merching(GL, shaderProgram) {
         // initialize values
         for (var i = 0; i < size3; i++)
             values[i] = 0;
+
+
         processBall(points, values, radius1, center1);
         processBall(points, values, radius2, center2);
-        marchingCubes(points, values, 0.7);
+
+        marchingCubes(points, values, 0.51);
 
         function processBall(points, values, radius, center) {
 
@@ -452,9 +378,16 @@ function Merching(GL, shaderProgram) {
 
                 var distanceToSquared = dx * dx + dy * dy + dz * dz;
 
-                var OneMinusD2 = 1.0 - distanceToSquared;
+                var OneMinusD2 = radius*radius  - distanceToSquared;
                 values[i] += Math.exp(-(OneMinusD2 * OneMinusD2));
+                /*  if(radius>=OneMinusD2&&OneMinusD2>=0){
+                      values[i] += (1 - (OneMinusD2/radius)*(OneMinusD2/radius))*(1 - (OneMinusD2/radius)*(OneMinusD2/radius));
+                  }
+                  else if(OneMinusD2>=)
+                      values[i] += 0;
+                  else{
 
+                  }*/
             }
         }
     }
@@ -663,6 +596,7 @@ function Merching(GL, shaderProgram) {
 
         computeFaceNormals(faces, verticeArray);
 
+        computeVertexNormals(faces,verticeArray);
         function mergeVertices(faces, vertices) {
 
             var verticesMap = {}; // Hashmap for looking up vertice by position coordinates (and making sure they are unique)
@@ -675,7 +609,7 @@ function Merching(GL, shaderProgram) {
             var indices, k, j, jl, u;
 
             // reset cache of vertices as it now will be changing.
-            var __tmpVertices = undefined;
+            __tmpVertices = undefined;
 
             for (i = 0, il = vertices.length; i < il; i++) {
 
@@ -792,6 +726,12 @@ function Merching(GL, shaderProgram) {
 
         function subVectors(a, b, c) {
 
+            if( a===undefined)
+                a=[0,0,0];
+            if( b===undefined)
+                b=[0,0,0];
+
+
             c.x = a[0] - b[0];
             c.y = a[1] - b[1];
             c.z = a[2] - b[2];
@@ -830,7 +770,157 @@ function Merching(GL, shaderProgram) {
             }
         }
 
+        function computeVertexNormals( faces, verticeArray,areaWeighted ) {
 
+            var v, vl, f, fl, face, vertices;
+
+            // create internal buffers for reuse when calling this method repeatedly
+            // (otherwise memory allocation / deallocation every frame is big resource hog)
+
+            if ( __tmpVertices === undefined ) {
+
+                __tmpVertices = new Array( verticeArray.length );
+                vertices = __tmpVertices;
+
+                for ( v = 0, vl = verticeArray.length; v < vl; v ++ ) {
+
+                    vertices[ v ] = new Vector3();
+                    vertices[v] = [0,0,0];
+                }
+
+                for ( f = 0, fl = faces.length; f < fl; f ++ ) {
+
+                    face = faces[ f ];
+
+                    if ( face instanceof Face3 ) {
+
+                        face.vertexNormals = [ new Vector3(), new Vector3(), new Vector3() ];
+
+                    }
+                }
+
+            } else {
+
+                vertices = __tmpVertices;
+
+                for ( v = 0, vl = verticeArray.length; v < vl; v ++ ) {
+
+                    vertices[ v ][0]  = 0;
+                    vertices[ v ][1]  = 0;
+                    vertices[ v ][2]  = 0;
+
+                }
+
+            }
+
+            if ( areaWeighted ) {
+
+                // vertex normals weighted by triangle areas
+                // http://www.iquilezles.org/www/articles/normals/normals.htm
+
+                var vA, vB, vC, vD;
+                var cb = new Vector3(), ab = new Vector3(),
+                    db = new Vector3(), dc = new Vector3(), bc = new Vector3();
+
+                for ( f = 0, fl = faces.length; f < fl; f ++ ) {
+
+                    face = faces[ f ];
+
+                    if ( face instanceof Face3 ) {
+
+                        vA = verticeArray[ face.a ];
+                        vB = verticeArray[ face.b ];
+                        vC = verticeArray[ face.c ];
+
+                        subVectors(vC, vB, cb);
+                        subVectors(vA, vB, ab);
+
+                        var tx = cb.y * ab.z - ab.y * cb.z;
+                        var ty = cb.z * ab.x - cb.x * ab.z;
+                        var tz = cb.x * ab.y - cb.y * ab.x;
+                        cb.x = tx;
+                        cb.y = ty;
+                        cb.z = tz;
+                        vertices[ face.a ][0] = vertices[ face.a ][0] +cb.x ;
+                        vertices[ face.a ][1] = vertices[ face.a ][1] +cb.y ;
+                        vertices[ face.a ][2] = vertices[ face.a ][2] +cb.z ;
+                        vertices[ face.b ][0] = vertices[ face.b ][0] +cb.x ;
+                        vertices[ face.b ][1] = vertices[ face.b ][1] +cb.y ;
+                        vertices[ face.b ][2] = vertices[ face.b ][2] +cb.z ;
+                        vertices[ face.c ][0] = vertices[ face.c ][0] +cb.x;
+                        vertices[ face.c ][1] = vertices[ face.c ][1] +cb.y;
+                        vertices[ face.c ][2] = vertices[ face.c ][2] +cb.z;
+
+
+                    }
+
+                }
+
+            } else {
+
+                for ( f = 0, fl = faces.length; f < fl; f ++ ) {
+
+                    face = faces[ f ];
+
+                    if ( face instanceof Face3 ) {
+
+                        vertices[ face.a ][0] = vertices[ face.a ][0] +face.normal.x ;
+                        vertices[ face.a ][1] = vertices[ face.a ][1] +face.normal.y ;
+                        vertices[ face.a ][2] = vertices[ face.a ][2] +face.normal.z ;
+                        vertices[ face.b ][0] = vertices[ face.b ][0] +face.normal.x ;
+                        vertices[ face.b ][1] = vertices[ face.b ][1] +face.normal.y ;
+                        vertices[ face.b ][2] = vertices[ face.b ][2] +face.normal.z ;
+                        vertices[ face.c ][0] = vertices[ face.c ][0] +face.normal.x ;
+                        vertices[ face.c ][1] = vertices[ face.c ][1] +face.normal.y ;
+                        vertices[ face.c ][2] = vertices[ face.c ][2] +face.normal.z ;
+
+
+                    }
+
+                }
+
+            }
+
+            for ( v = 0, vl = verticeArray.length; v < vl; v ++ ) {
+
+
+                var c = vertices[v][0], d = vertices[v][1], e = vertices[v][2], g = Math.sqrt(c*c+d*d+e*e);
+                if(g){
+                    if(g == 1){}
+                    else{
+                        g = 1/g;
+                        vertices[v][0]= c*g; vertices[v][1] = d*g; vertices[v][2] = e*g;
+                    }
+                } else {
+                    vertices[v][0] = 0; vertices[v][1]= 0; vertices[v][2]= 0;
+                }
+
+
+            }
+
+            for ( f = 0, fl = faces.length; f < fl; f ++ ) {
+
+                face = faces[ f ];
+
+                if ( face instanceof Face3 ) {
+
+
+
+                    myfaces.push(vertices[ face.a ][0]) ;
+                    myfaces.push(vertices[ face.a ][1]) ;
+                    myfaces.push(vertices[ face.a ][2]) ;
+                    myfaces.push(vertices[ face.b ][0]) ;
+                    myfaces.push(vertices[ face.b ][1]) ;
+                    myfaces.push(vertices[ face.b ][2]) ;
+                    myfaces.push(vertices[ face.c ][0]) ;
+                    myfaces.push(vertices[ face.c ][1]) ;
+                    myfaces.push(vertices[ face.c ][2]) ;
+
+                }
+
+            }
+
+        }
 
         var fixverticeArray = new Array();
         for (var i = 0; i < verticeArray.length; i++) {
@@ -840,39 +930,32 @@ function Merching(GL, shaderProgram) {
             fixverticeArray.push(verticeArray[i][2]);
         }
 
-
+        // console.log("tempPositionData",tempPositionData);
         tempPositionData = new Float32Array(fixverticeArray);
 
 
-        var tmpface = new Array();
-        for (var j = 0; j < faces.length; j++) {
-            tmpface.push(faces[j].normal);
-        }
+        /* var tmpface = new Array();
+         for (var j = 0; j < myfaces.length; j++) {
+             tmpface.push(myfaces[j].normal);
+         }
+         console.log("tmpface",tmpface);
+         var fixtmpface = new Array();
+         for (var i = 0; i < tmpface.length; i++) {
+             fixtmpface.push(tmpface[i].a);
+             fixtmpface.push(tmpface[i].b);
+             fixtmpface.push(tmpface[i].c);
+         }*/
+        /* var temp = [];
 
-        var fixtmpface = new Array();
-        for (var i = 0; i < tmpface.length; i++) {
-            fixtmpface.push(tmpface[i].x);
-            fixtmpface.push(tmpface[i].y);
-            fixtmpface.push(tmpface[i].z);
-        }
-        var temp = [];
+         //console.log("fixtempface",fixtempface);
+         for (let i = 0; i < myfaces.length; ++i) {
+             temp.push(myfaces[i]);
+
+         }*/
 
 
-        for (let i = 0; i < fixtmpface.length; ++i) {
-            temp.push(fixtmpface[i]);
-
-        }
-        for (let i = 0; i < fixtmpface.length; ++i) {
-            temp.push(fixtmpface[i]);
-
-        }
-        for (let i = 0; i < fixtmpface.length; ++i) {
-            temp.push(fixtmpface[i]);
-
-        }
-
-        tempNormalData = new Float32Array(temp);
-        tempVertexNum = temp.length / 3;
+        tempNormalData = new Float32Array(myfaces);
+        tempVertexNum = tempPositionData.length / 3;
 
 
     }
@@ -899,44 +982,45 @@ function Merching(GL, shaderProgram) {
 
     this.draw = function (viewMatrix, projectionMatrix) {
 
-        this.modelMatrix.setIdentity();
-        this.modelMatrix.translate(this.position[0], this.position[1], this.position[2]);
-        this.modelMatrix.scale(this.radius, this.radius, this.radius);
+        this.modelMatrix.setIdentity()
+        this.modelMatrix.translate(this.position[0], this.position[1], this.position[2])
+        this.modelMatrix.scale(this.radius, this.radius, this.radius)
 
-        var mvpMatrix = new Matrix4(projectionMatrix);
-        mvpMatrix.multiply(viewMatrix);
-        mvpMatrix.multiply(this.modelMatrix);
-        var normalMatrix = new Matrix4();
-        var gl = this.gl;
+        var normalMatrix = new Matrix4()
+        var gl = this.gl
 
-        normalMatrix.setInverseOf(this.modelMatrix);
-        normalMatrix.transpose();
+        normalMatrix.setInverseOf(this.modelMatrix)
+        normalMatrix.transpose()
 
+        gl.useProgram(this.program)
 
-        gl.useProgram(this.program);
+        gl.uniformMatrix4fv(this.uModelMatrix, false, this.modelMatrix.elements)
+        gl.uniformMatrix4fv(this.uViewMatrix, false, viewMatrix.elements)
+        gl.uniformMatrix4fv(this.uProjectionMatrix, false, projectionMatrix.elements)
+        gl.uniformMatrix4fv(this.uNormalMatrix, false, normalMatrix.elements)
 
-        gl.uniformMatrix4fv(this.uModelMatrix, false, this.modelMatrix.elements);
-        gl.uniformMatrix4fv(this.uMvpMatrix, false, mvpMatrix.elements);
-        gl.uniformMatrix4fv(this.uNormalMatrix, false, normalMatrix.elements);
+        gl.uniform3f(this.uKa, this.color[0], this.color[1], this.color[2])
+        gl.uniform3f(this.uKd, this.color[0], this.color[1], this.color[2])
+        gl.uniform3f(this.uKs, this.color[0], this.color[1], this.color[2])
+        gl.uniform1f(this.uNs, this.ns)
+        gl.uniform1f(this.uAlpha, this.alpha)
 
-        gl.uniform4f(this.uKa, this.color[0], this.color[1], this.color[2], this.color[3]);
+        console.log(tempPositionData, tempNormalData, tempVertexNum)
 
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBufferHandle)
+        gl.bufferData(gl.ARRAY_BUFFER, tempPositionData, gl.STATIC_DRAW)
+        gl.vertexAttribPointer(this.aPosition, 3, gl.FLOAT, false, 0, 0)
+        gl.enableVertexAttribArray(this.aPosition)  // Enable the assignment of the buffer object
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBufferHandle);
-        gl.bufferData(gl.ARRAY_BUFFER, tempPositionData, gl.STATIC_DRAW);
-        gl.vertexAttribPointer(this.aPosition, 3, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(this.aPosition);  // Enable the assignment of the buffer object
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBufferHandle)
+        gl.bufferData(gl.ARRAY_BUFFER, tempNormalData, gl.STATIC_DRAW)
+        gl.vertexAttribPointer(this.aNormal, 3, gl.FLOAT, false, 0, 0)
+        gl.enableVertexAttribArray(this.aNormal)  // Enable the assignment of the buffer object
 
+        gl.drawArrays(gl.TRIANGLES, 0, tempVertexNum)
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBufferHandle);
-        gl.bufferData(gl.ARRAY_BUFFER, tempNormalData, gl.STATIC_DRAW);
-        gl.vertexAttribPointer(this.aNormal, 3, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(this.aNormal);  // Enable the assignment of the buffer object
+        gl.bindBuffer(gl.ARRAY_BUFFER, null)
 
-
-        gl.drawArrays(gl.TRIANGLES, 0, tempVertexNum);
-
-        gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
     };
 
