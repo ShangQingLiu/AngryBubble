@@ -6,16 +6,16 @@ const NSLINE = 12;
 function Obj(filepath, glObject){
     this.basicElements = [];
     this.gl = glObject;
-    this.vsModelMatrix = glObject.getUniformLocation(glObject.program, 'vsModelMatrix');
-    this.vsMvpMatrix = glObject.getUniformLocation(glObject.program, 'vsMvpMatrix');
-    this.vsNormalMatrix = glObject.getUniformLocation(glObject.program, 'vsNormalMatrix');
+    this.uModelMatrix = glObject.getUniformLocation(glObject.program, 'uModelMatrix');
+    this.uMvpMatrix = glObject.getUniformLocation(glObject.program, 'uMvpMatrix');
+    this.uNormalMatrix = glObject.getUniformLocation(glObject.program, 'uNormalMatrix');
 
     this.vsKa = glObject.getUniformLocation(glObject.program, 'vsKa');
     this.vsKd = glObject.getUniformLocation(glObject.program, 'vsKd');
     this.vsKs = glObject.getUniformLocation(glObject.program, 'vsKs');
 
-    this.vsPosition = glObject.getAttribLocation(glObject.program, 'vsPosition');
-    this.vsNormal  = glObject.getAttribLocation(glObject.program, 'vsNormal');
+    this.aPosition = glObject.getAttribLocation(glObject.program, 'aPosition');
+    this.aNormal  = glObject.getAttribLocation(glObject.program, 'aNormal');
 
 
     this.modelMatrix = new Matrix4();
@@ -30,9 +30,9 @@ function Obj(filepath, glObject){
         normalMatrix.setInverseOf(this.modelMatrix);
         normalMatrix.transpose();
 
-        gl.uniformMatrix4fv(this.vsModelMatrix, false, this.modelMatrix.elements);
-        gl.uniformMatrix4fv(this.vsMvpMatrix, false, mvpMatrix.elements);
-        gl.uniformMatrix4fv(this.vsNormalMatrix, false, normalMatrix.elements);
+        gl.uniformMatrix4fv(this.uModelMatrix, false, this.modelMatrix.elements);
+        gl.uniformMatrix4fv(this.uMvpMatrix, false, mvpMatrix.elements);
+        gl.uniformMatrix4fv(this.uNormalMatrix, false, normalMatrix.elements);
 
 
         for(var i = 0; i != this.basicElements.length; ++i){
@@ -54,14 +54,14 @@ function Obj(filepath, glObject){
 
             gl.bindBuffer(gl.ARRAY_BUFFER, basicElement.positionBufferHandle);
             gl.bufferData(gl.ARRAY_BUFFER, basicElement.positionData, gl.STATIC_DRAW);
-            gl.vertexAttribPointer(this.vsPosition, 3, gl.FLOAT, false, 0, 0);
-            gl.enableVertexAttribArray(this.vsPosition);  // Enable the assignment of the buffer object
+            gl.vertexAttribPointer(this.aPosition, 3, gl.FLOAT, false, 0, 0);
+            gl.enableVertexAttribArray(this.aPosition);  // Enable the assignment of the buffer object
 
 
             gl.bindBuffer(gl.ARRAY_BUFFER, basicElement.normalBufferHandle);
             gl.bufferData(gl.ARRAY_BUFFER, basicElement.normalData, gl.STATIC_DRAW);
-            gl.vertexAttribPointer(this.vsNormal, 3, gl.FLOAT, false, 0, 0);
-            gl.enableVertexAttribArray(this.vsNormal);  // Enable the assignment of the buffer object
+            gl.vertexAttribPointer(this.aNormal, 3, gl.FLOAT, false, 0, 0);
+            gl.enableVertexAttribArray(this.aNormal);  // Enable the assignment of the buffer object
 
 
             gl.drawArrays(gl.TRIANGLES, 0, basicElement.vertexNum);

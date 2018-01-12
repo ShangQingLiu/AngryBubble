@@ -15,14 +15,14 @@ function Merching(GL, shaderProgram) {
     this.normalBufferHandle = GL.createBuffer();
     this.positionData = null;
     this.normalData = null;
-    this.vsPosition = GL.getAttribLocation(shaderProgram, 'vsPosition');
-    this.vsNormal = GL.getAttribLocation(shaderProgram, 'vsNormal');
-    this.vsModelMatrix = GL.getUniformLocation(shaderProgram, 'vsModelMatrix');
-    this.vsNormalMatrix = GL.getUniformLocation(shaderProgram, 'vsNormalMatrix');
+    this.aPosition = GL.getAttribLocation(shaderProgram, 'aPosition');
+    this.aNormal = GL.getAttribLocation(shaderProgram, 'aNormal');
+    this.uModelMatrix = GL.getUniformLocation(shaderProgram, 'uModelMatrix');
+    this.uNormalMatrix = GL.getUniformLocation(shaderProgram, 'uNormalMatrix');
     this.program = shaderProgram;
 
 
-    this.fsKa = GL.getUniformLocation(shaderProgram, 'fsKa');
+    this.uKa = GL.getUniformLocation(shaderProgram, 'uKa');
 
     this.color = [1.0, 1.0, 1.0, 1.0];
     this.position = [0.0,0.0,0.0];
@@ -915,23 +915,23 @@ function Merching(GL, shaderProgram) {
 
         gl.useProgram(this.program);
 
-        gl.uniformMatrix4fv(this.vsModelMatrix, false, this.modelMatrix.elements);
-        gl.uniformMatrix4fv(this.vsMvpMatrix, false, mvpMatrix.elements);
-        gl.uniformMatrix4fv(this.vsNormalMatrix, false, normalMatrix.elements);
+        gl.uniformMatrix4fv(this.uModelMatrix, false, this.modelMatrix.elements);
+        gl.uniformMatrix4fv(this.uMvpMatrix, false, mvpMatrix.elements);
+        gl.uniformMatrix4fv(this.uNormalMatrix, false, normalMatrix.elements);
 
-        gl.uniform4f(this.fsKa, this.color[0], this.color[1], this.color[2], this.color[3]);
+        gl.uniform4f(this.uKa, this.color[0], this.color[1], this.color[2], this.color[3]);
 
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBufferHandle);
         gl.bufferData(gl.ARRAY_BUFFER, tempPositionData, gl.STATIC_DRAW);
-        gl.vertexAttribPointer(this.vsPosition, 3, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(this.vsPosition);  // Enable the assignment of the buffer object
+        gl.vertexAttribPointer(this.aPosition, 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(this.aPosition);  // Enable the assignment of the buffer object
 
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBufferHandle);
         gl.bufferData(gl.ARRAY_BUFFER, tempNormalData, gl.STATIC_DRAW);
-        gl.vertexAttribPointer(this.vsNormal, 3, gl.FLOAT, false, 0, 0);
-        gl.enableVertexAttribArray(this.vsNormal);  // Enable the assignment of the buffer object
+        gl.vertexAttribPointer(this.aNormal, 3, gl.FLOAT, false, 0, 0);
+        gl.enableVertexAttribArray(this.aNormal);  // Enable the assignment of the buffer object
 
 
         gl.drawArrays(gl.TRIANGLES, 0, tempVertexNum);

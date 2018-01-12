@@ -11,11 +11,11 @@ function TextureBorder(bound, imageSrc, glObject, textureShaderProgram) {
     this.gl = glObject
     this.positionData = null
     this.coordsData = null
-    this.vsMvpMatrix = glObject.getUniformLocation(textureShaderProgram, 'vsMvpMatrix')
-    this.fsKa = glObject.getUniformLocation(textureShaderProgram, 'fsKa')
-    this.fsSampler = glObject.getUniformLocation(textureShaderProgram, 'fsSampler')
-    this.vsPosition = glObject.getAttribLocation(textureShaderProgram, 'vsPosition')
-    this.vsTexCoord = glObject.getAttribLocation(textureShaderProgram, 'vsTexCoord')
+    this.uMvpMatrix = glObject.getUniformLocation(textureShaderProgram, 'uMvpMatrix')
+    this.uKa = glObject.getUniformLocation(textureShaderProgram, 'uKa')
+    this.uSampler = glObject.getUniformLocation(textureShaderProgram, 'uSampler')
+    this.aPosition = glObject.getAttribLocation(textureShaderProgram, 'aPosition')
+    this.aTexCoord = glObject.getAttribLocation(textureShaderProgram, 'aTexCoord')
     this.positionBufferHandle = null
     this.coordsBufferHandle = null
     this.textureHandle = null
@@ -130,24 +130,24 @@ function TextureBorder(bound, imageSrc, glObject, textureShaderProgram) {
         mvpMatrix.multiply(viewMatrix)
         var gl = this.gl
         gl.useProgram(this.program)
-        gl.uniformMatrix4fv(this.vsMvpMatrix, false, mvpMatrix.elements)
+        gl.uniformMatrix4fv(this.uMvpMatrix, false, mvpMatrix.elements)
 
         const light = 0.6
 
-        gl.uniform4f(this.fsKa, light, light, light, 1.0)
+        gl.uniform4f(this.uKa, light, light, light, 1.0)
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBufferHandle)
         gl.bufferData(gl.ARRAY_BUFFER, this.positionData, gl.STATIC_DRAW)
-        gl.vertexAttribPointer(this.vsPosition, 3, gl.FLOAT, false, 0, 0)
-        gl.enableVertexAttribArray(this.vsPosition)
+        gl.vertexAttribPointer(this.aPosition, 3, gl.FLOAT, false, 0, 0)
+        gl.enableVertexAttribArray(this.aPosition)
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.coordsBufferHandle)
         gl.bufferData(gl.ARRAY_BUFFER, this.coordsData, gl.STATIC_DRAW)
-        gl.vertexAttribPointer(this.vsTexCoord, 2, gl.FLOAT, false, 0, 0)
-        gl.enableVertexAttribArray(this.vsTexCoord)
+        gl.vertexAttribPointer(this.aTexCoord, 2, gl.FLOAT, false, 0, 0)
+        gl.enableVertexAttribArray(this.aTexCoord)
 
         // Set the texture unit 0 to the sampler
-        gl.uniform1i(this.fsSampler, 0)
+        gl.uniform1i(this.uSampler, 0)
 
         gl.activeTexture(gl.TEXTURE0)
         gl.bindTexture(gl.TEXTURE_2D, this.textureHandle);
