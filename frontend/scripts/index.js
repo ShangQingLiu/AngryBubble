@@ -41,6 +41,12 @@ const canvas = document.getElementById('main')
 canvas.height = window.innerHeight
 canvas.width = window.innerWidth
 
+$('.modal').modal({
+  complete: () => {
+    window.location.reload()
+  }
+})
+
 document.querySelector('#input').addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
     document.getElementById('cover').style.visibility = 'hidden'
@@ -126,7 +132,8 @@ function update(args) {
   }
   else {
     console.log('you\'ve been eaten')
-    window.alert('you\'ve been eaten')
+    // window.alert('you\'ve been eaten')
+    $('#modal1').modal('open')
   }
   updateRank()
   console.log(currentUser)
