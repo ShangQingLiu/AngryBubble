@@ -387,13 +387,6 @@ function Scene(_canvas) {
             this.userBalls[i].draw(viewMatrix, projectionMatrix)
         }
 
-        for(var i = 0; i != this.testBalls.length; ++i){
-            this.testBalls[i].setRadius(stone[i].radius);
-            this.testBalls[i].setPosition(stone[i].pos.x, stone[i].pos.y, stone[i].pos.z);
-            this.testBalls[i].setUserColor();
-            this.testBalls[i].draw(viewMatrix, projectionMatrix);
-        }
-
         gl.depthMask(true);
 
 
@@ -443,12 +436,6 @@ function Scene(_canvas) {
     this.foodBalls = []
     this.stoneObjcet = new ObjObject('./scripts/resources/stone.obj', gl, this.objShaderProgram);
 
-
-
-    this.testBalls = [];
-    for(let i = 0; i != 4; ++i){
-        this.testBalls.push(new Ball(this.gl, this.shaderProgram, 4));
-    }
 
     this.canvas.onmousedown = onMouseDown
     document.onmouseup = onMouseUp
