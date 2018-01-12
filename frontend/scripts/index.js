@@ -1,10 +1,13 @@
 const socket = io()
 const config = {
-  'boarderRadius': 20,
-  'sceneRadius': 60,
+  'boarderRadius': 40,
+  'sceneRadius': 64,
+  'cameraInitDistance': 7,
   'cameraMaxDistance': 20,
-  'cameraMinRatio': 1.2,
-  'cameraMoveStep': 0.2,
+  'cameraMinRatio': 3,
+  'cameraMinDistance': 12,
+  'cameraMoveStepBase': 2,
+  'moveBaseStep': 0.5,
   'maxBallRadius': 10
 }
 let users = []
@@ -100,20 +103,18 @@ function onKeyDown(event) {
   const tmpUser = JSON.parse(JSON.stringify(currentUser))
   switch (event.key) {
     case 'w':
-      tmpUser.pos = nextPositionToward(1)
+      tmpUser.pos = nextPositionToward(config.moveBaseStep / currentUser.radius)
       if (checkCollision(tmpUser))
-        currentUser.pos = nextPositionToward(-2)
+        currentUser.pos = nextPositionToward(-2 * config.moveBaseStep / currentUser.radius)
       break
     case 's':
-      tmpUser.pos = nextPositionToward(-1)
+      tmpUser.pos = nextPositionToward(-config.moveBaseStep / currentUser.radius)
       if (checkCollision(tmpUser))
-        currentUser.pos = nextPositionToward(2)
+        currentUser.pos = nextPositionToward(-2 * config.moveBaseStep / currentUser.radius)
       break
     case 'a':
-      tmpUser.pos.x -= 0.1
       break
     case 'd':
-      tmpUser.pos.x += 0.1
       break
     default:
       break
