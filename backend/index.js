@@ -4,6 +4,40 @@ const http = require('http').Server(app)
 const io = require('socket.io')(http)
 const path = require('path')
 const config = require('./config.json')
+const stone = [
+  {
+    pos: {
+      x: 2,
+      y: 7,
+      z: 3
+    },
+    radius: 0.3
+  },
+  {
+    pos: {
+      x: 4,
+      y: 5,
+      z: 4
+    },
+    radius: 0.3
+  },
+  {
+    pos: {
+      x: 1,
+      y: 5,
+      z: 8
+    },
+    radius: 0.3
+  },
+  {
+    pos: {
+      x: 3,
+      y: 2,
+      z: 9
+    },
+    radius: 0.3
+  }
+]
 
 app.use(express.static(path.resolve(__dirname + '/../frontend')))
 
@@ -34,6 +68,13 @@ io.on('connection', socket => {
         z: Math.random()
       },
       radius: config.initSize
+    }
+    while (checkInclude(newUser)) {
+      newUser.pos = {
+        x: Math.random(),
+        y: Math.random(),
+        z: Math.random()
+      }
     }
     let index = users.findIndex((val) => val.id === newUser.id)
     if (index !== -1)
@@ -154,4 +195,23 @@ function addFoods() {
       foods.push(food)
     }
   }
+}
+
+function checkInclude(user) {
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].id !== user.id && includeBall(user, users[i])) {
+      return true
+    }
+  }
+}
+
+function includeBall(ball1, ball2) {
+  return (
+    (
+      Math.pow(ball1.pos.x - ball2.pos.x, 2) +
+      Math.pow(ball1.pos.y - ball2.pos.y, 2) +
+      Math.pow(ball1.pos.z - ball2.pos.z, 2)
+    ) <
+    Math.pow(ball1.radius - ball2.radius, 2)
+  )
 }
