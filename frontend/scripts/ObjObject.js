@@ -55,7 +55,7 @@ function ObjObject(filePath, _gl, _shaderProgram){
 
         modelMatrix.multiply(this.basicScaleMatrix);
 
-
+        console.log(modelMatrix, normalMatrix, viewMatrix, projectionMatrix);
 
 
         gl.uniformMatrix4fv(this.uModelMatrix, false, modelMatrix.elements);
@@ -207,7 +207,6 @@ function ObjObject(filePath, _gl, _shaderProgram){
     }
 
 
-    console.log(minX, minY, minZ, maxX, maxY, maxZ);
 
     let detaX = maxX - minX, detaY = maxY - minY, detaZ = maxZ - minZ;
 
@@ -223,10 +222,6 @@ function ObjObject(filePath, _gl, _shaderProgram){
     var isUseTexture = coordsBuffer.length != 0;
     var isGiveNormal = normalBuffer.length != 0;
 
-
-    console.log(positionBuffer);
-    console.log(coordsBuffer);
-    console.log(normalBuffer);
 
     for(;index!=n;++index){
         var line = lines[index];
@@ -347,7 +342,6 @@ function ObjObject(filePath, _gl, _shaderProgram){
 
     }
     this.basicElements.push(currentElement);
-    console.log(this)
     for(var i = 0; i != this.basicElements.length; ++i){
         this.basicElements[i].prepareData();
     }

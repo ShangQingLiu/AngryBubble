@@ -303,10 +303,8 @@ function Scene(_canvas) {
     }
 
     this.gl = null
-    this.objects = []
     this.fsAmbientLight = null
-    let gl
-
+    let gl;
     this.draw = function () {
         let gl=this.gl;
         gl.enable(gl.DEPTH_TEST);
@@ -370,21 +368,24 @@ function Scene(_canvas) {
         gl.uniform3f(uDirectionalLightColor, 0.4, 0.4, 0.4);
         gl.uniform3f(uAmbientLightColor, 0.4, 0.4, 0.4);
 
-
-        this.rock.draw(viewMatrix, projectionMatrix);
-
-
         this.textureBorder.draw(viewMatrix, projectionMatrix)
         for (let i = 0; i != foods.length; ++i) {
             this.foodBalls[i].draw(viewMatrix, projectionMatrix)
         }
-        //gl.depthMask(true);
+        gl.depthMask(true);
         for (var i = 0; i != users.length; ++i) {
             this.userBalls[i].draw(viewMatrix, projectionMatrix)
         }
 
+        for( let i = 0; i != stone.length; ++i){
+            for (let i = 0; i != stone.length; ++i) {
+                this.stoneObjcet.setPosition(stone[i].pos.x, stone[i].pos.y, stone[i].pos.z)
+                this.stoneObjcet.setRadius(stone[i].radius);
+                this.stoneObjcet.draw(viewMatrix, projectionMatrix);
+            }
+        }
 
-        //gl.depthMask(true);
+        gl.depthMask(true);
 
 
     }
@@ -430,8 +431,9 @@ function Scene(_canvas) {
 
     this.textureBorder = new TextureBorder(20, './scripts/resources/background.jpg', gl, this.textureShaderProgram)
     this.userBalls = []
-    this.rock = new ObjObject('./scripts/resources/stone.obj', gl, this.objShaderProgram);
     this.foodBalls = []
+    this.stoneObjcet = new ObjObject('./scripts/resources/stone.obj', gl, this.objShaderProgram);
+
 
     this.canvas.onmousedown = onMouseDown
     document.onmouseup = onMouseUp
