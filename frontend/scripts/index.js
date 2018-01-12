@@ -183,7 +183,7 @@ function updateRank() {
     const nameCell = newRow.insertCell(0)
     const radiusCell = newRow.insertCell(1)
     const name = document.createTextNode(user.name)
-    const radius = document.createTextNode(user.radius)
+    const radius = document.createTextNode(user.radius.toFixed(2))
     nameCell.appendChild(name)
     radiusCell.appendChild(radius)
   })
