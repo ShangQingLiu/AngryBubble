@@ -1,5 +1,12 @@
 const socket = io()
-
+const config = {
+  'boarderRadius': 20,
+  'sceneRadius': 60,
+  'cameraMaxDistance': 20,
+  'cameraMinRatio': 1.2,
+  'cameraMoveStep': 0.2,
+  'maxBallRadius': 10
+}
 let users = []
 let foods = []
 const stone = [ // todo: need sync between frontend and backend
@@ -200,6 +207,10 @@ function updateRank() {
 }
 
 function checkCollision(user) {
+  const borderRadius = config.boarderRadius
+  if (Math.pow(user.pos.x, 2) + Math.pow(user.pos.y, 2) + Math.pow(user.pos.z, 2) > borderRadius * borderRadius) {
+    return true
+  }
   for (const s of stone) {
     console.log(s)
     if ((

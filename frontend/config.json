@@ -1,0 +1,8 @@
+{
+  "boarderRadius": 40,
+  "sceneRadius": 60,
+  "cameraMaxDistance": 20,
+  "cameraMinRatio": 1.2,
+  "cameraMoveStep": 0.2,
+  "maxBallRadius": 10
+}
