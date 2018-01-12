@@ -54,7 +54,7 @@ function ObjObject(filePath, _gl, _shaderProgram){
         modelMatrix.translate(- this.originalCenter[0], - this.originalCenter[1], - this.originalCenter[2]);
 
         modelMatrix.multiply(this.basicScaleMatrix);
-        
+
         gl.uniformMatrix4fv(this.uModelMatrix, false, modelMatrix.elements);
         gl.uniformMatrix4fv(this.uViewMatrix, false, viewMatrix.elements);
         gl.uniformMatrix4fv(this.uProjectionMatrix, false, projectionMatrix.elements);
@@ -210,8 +210,9 @@ function ObjObject(filePath, _gl, _shaderProgram){
     let deta = detaX < detaY ? (detaX < detaZ ? detaX : detaZ) : (detaY < detaZ ? detaY : detaZ);
 
     this.originalCenter = [(maxX + minX) / 2*deta/detaX, (maxY + minY)/ 2*deta/detaY, (maxZ + minZ)/ 2*deta/detaZ]
-    //this.radius = deta;
-    this.basicScaleMatrix.setScale(deta/detaX, deta/detaY,deta/detaZ);
+    //this.originalRadius = deta;
+    this.basicScaleMatrix.scale(1/deta, 1/deta, 1/deta);
+    this.basicScaleMatrix.scale(deta/detaX, deta/detaY,deta/detaZ);
 
 
 
