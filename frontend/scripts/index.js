@@ -16,43 +16,59 @@ let foods = []
 const stone = [ // todo: need sync between frontend and backend
   {
     pos: {
-      x: 2,
-      y: 2,
-      z: 2
+      x: -7,
+      y: -2,
+      z: -18
     },
-    radius: 0.5
+    radius: 2.5
   },
   {
     pos: {
-      x: 2,
-      y: 7,
-      z: 3
+      x: -32,
+      y: -27,
+      z: -13
     },
-    radius: 0.2
+    radius: 5
   },
   {
     pos: {
-      x: 4,
-      y: 5,
-      z: 4
+      x: 16,
+      y: -19,
+      z: 15
     },
-    radius: 0.3
+    radius: 6.4
   },
   {
     pos: {
-      x: 1,
-      y: 5,
-      z: 8
+      x: -21,
+      y: -29,
+      z: 25
     },
-    radius: 0.3
+    radius: 5
+  },
+  {
+    pos: {
+      x: 32,
+      y: 27,
+      z: -33
+    },
+    radius: 5
+  },
+  {
+    pos: {
+      x: 17,
+      y: 39,
+      z: 35
+    },
+    radius: 7.4
   },
   {
     pos: {
       x: 3,
-      y: 2,
+      y: 7,
       z: 9
     },
-    radius: 0.3
+    radius: 2.0
   }
 ]
 let currentUser
