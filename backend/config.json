@@ -1,9 +1,10 @@
 {
   "initSize": 1.0,
   "food": {
-    "maxFoods": 200,
-    "initNum": 100,
-    "size": 0.1,
-    "newBallInAddition": 10
+    "maxFoods": 400,
+    "initNum": 200,
+    "size": 0.2,
+    "newBallInAddition": 10,
+    "maxDistance": 20
   }
 }

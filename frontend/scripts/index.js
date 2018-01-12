@@ -7,7 +7,8 @@ const config = {
   'cameraMinRatio': 3,
   'cameraMinDistance': 12,
   'cameraMoveStepBase': 2,
-  'moveBaseStep': 0.5,
+  'moveBaseStep': 3,
+  'collisionBounce': 5,
   'maxBallRadius': 10
 }
 let users = []
@@ -105,12 +106,12 @@ function onKeyDown(event) {
     case 'w':
       tmpUser.pos = nextPositionToward(config.moveBaseStep / currentUser.radius)
       if (checkCollision(tmpUser))
-        currentUser.pos = nextPositionToward(-2 * config.moveBaseStep / currentUser.radius)
+        currentUser.pos = nextPositionToward(-config.collisionBounce)
       break
     case 's':
       tmpUser.pos = nextPositionToward(-config.moveBaseStep / currentUser.radius)
       if (checkCollision(tmpUser))
-        currentUser.pos = nextPositionToward(-2 * config.moveBaseStep / currentUser.radius)
+        currentUser.pos = nextPositionToward(config.collisionBounce)
       break
     case 'a':
       break

@@ -160,10 +160,10 @@ function initFoods() {
     const food = {
       id: Math.random().toString(36).substr(2, 16),
       radius: config.food.size,
-      pos: { // todo: range
-        x: Math.random() * 10 - 5,
-        y: Math.random() * 10 - 5,
-        z: Math.random() * 10 - 5
+      pos: {
+        x: 2 * Math.random() * config.food.maxDistance - config.food.maxDistance,
+        y: 2 * Math.random() * config.food.maxDistance - config.food.maxDistance,
+        z: 2 * Math.random() * config.food.maxDistance - config.food.maxDistance
       },
       color: {
         r: Math.random(),
