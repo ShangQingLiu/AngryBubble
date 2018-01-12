@@ -382,8 +382,11 @@ function Scene(_canvas) {
         }
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> objBranch
         gl.depthMask(true);
         for (var i = 0; i != users.length; ++i) {
             this.userBalls[i].draw(viewMatrix, projectionMatrix)
