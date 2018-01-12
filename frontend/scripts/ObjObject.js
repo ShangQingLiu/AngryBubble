@@ -54,7 +54,10 @@ function ObjObject(filePath, _gl, _shaderProgram){
         modelMatrix.translate(- this.originalCenter[0], - this.originalCenter[1], - this.originalCenter[2]);
 
         modelMatrix.multiply(this.basicScaleMatrix);
+<<<<<<< HEAD
 
+=======
+>>>>>>> 196a98c4df8918503977b2c0a46635a225e55616
         gl.uniformMatrix4fv(this.uModelMatrix, false, modelMatrix.elements);
         gl.uniformMatrix4fv(this.uViewMatrix, false, viewMatrix.elements);
         gl.uniformMatrix4fv(this.uProjectionMatrix, false, projectionMatrix.elements);

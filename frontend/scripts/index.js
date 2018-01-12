@@ -2,14 +2,22 @@ const socket = io()
 
 let users = []
 let foods = []
-const stone = [
+const stone = [ // todo: need sync between frontend and backend
+  {
+    pos: {
+      x: 2,
+      y: 2,
+      z: 2
+    },
+    radius: 0.5
+  },
   {
     pos: {
       x: 2,
       y: 7,
       z: 3
     },
-    radius: 0.3
+    radius: 0.2
   },
   {
     pos: {
@@ -107,7 +115,7 @@ function onKeyDown(event) {
     checkFoods(tmpUser)
     checkUsers(tmpUser)
   }
-  console.log(tmpUser)
+  // console.log(tmpUser)
 }
 
 function init(args) {
@@ -123,7 +131,7 @@ function init(args) {
 }
 
 function update(args) {
-  console.log('update user')
+  // console.log('update user')
   users = args.users
   foods = args.foods
   let index
@@ -136,7 +144,7 @@ function update(args) {
     $('#modal1').modal('open')
   }
   updateRank()
-  console.log(currentUser)
+  // console.log(currentUser)
 }
 
 function checkFoods(user) {
