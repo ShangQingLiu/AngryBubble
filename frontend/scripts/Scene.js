@@ -75,29 +75,29 @@ void main() {
     } 
     color = color + diffuse;
 
-    // vec3 cameraPos = uPointLightingLocation;
-    //
-    // vec4 specular = vec4(0.0, 0.0, 0.0, 1.0);
-    // vec3 reflectLightDir = reflect(pointLightDirection, vertexNormal);  
-    // reflectLightDir= normalize(reflectLightDir);  
-    // vec3 vertexToCamera = cameraPos - vertexPosition.xyz;  
-    // vertexToCamera= normalize(vertexToCamera);  
-    // float specularFactor = dot(vertexToCamera, reflectLightDir);
-    // if (specularFactor > 0.0) {
-    //     specularFactor = pow(specularFactor, uNs);
-    //     specular = specularFactor*vec4(uPointLightColor, 1.0)*vec4(uKs, 1.0);
-    // }
-    // color = color + specular;
+    vec3 cameraPos = uPointLightingLocation;
 
-    // specular = vec4(0.0, 0.0, 0.0, 1.0);
-    // reflectLightDir = reflect(directionalLightDirection, vertexNormal);
-    // reflectLightDir= normalize(reflectLightDir);  
-    // specularFactor = dot(vertexToCamera, reflectLightDir);
-    // if (specularFactor > 0.0) {
-    //     specularFactor = pow (specularFactor, uNs);
-    //     specular = specularFactor*vec4(uDirectionalLightColor, 1.0)*vec4(uKs, 1.0);
-    // }
-    // color = color + specular;
+    vec4 specular = vec4(0.0, 0.0, 0.0, 1.0);
+    vec3 reflectLightDir = reflect(pointLightDirection, vertexNormal);  
+    reflectLightDir= normalize(reflectLightDir);  
+    vec3 vertexToCamera = cameraPos - vertexPosition.xyz;  
+    vertexToCamera= normalize(vertexToCamera);  
+    float specularFactor = dot(vertexToCamera, reflectLightDir);
+    if (specularFactor > 0.0) {
+        specularFactor = pow(specularFactor, uNs);
+        specular = specularFactor*vec4(uPointLightColor, 1.0)*vec4(uKs, 1.0);
+    }
+    color = color + specular;
+
+    specular = vec4(0.0, 0.0, 0.0, 1.0);
+    reflectLightDir = reflect(directionalLightDirection, vertexNormal);
+    reflectLightDir= normalize(reflectLightDir);  
+    specularFactor = dot(vertexToCamera, reflectLightDir);
+    if (specularFactor > 0.0) {
+        specularFactor = pow (specularFactor, uNs);
+        specular = specularFactor*vec4(uDirectionalLightColor, 1.0)*vec4(uKs, 1.0);
+    }
+    color = color + specular;
     gl_FragColor = vec4(color.xyz, 1.0);
 }
 
@@ -115,22 +115,23 @@ void main() {
 
 
 const vsSource = `
-attribute vec3 vsPosition;
-attribute vec3 vsNormal;
+attribute vec3 aPosition;
+attribute vec3 aNormal;
 
-uniform mat4 vsProjectionMatrix;
-uniform mat4 vsViewMatrix;
-uniform mat4 vsModelMatrix;
-uniform mat4 vsNormalMatrix;
+uniform mat4 uProjectionMatrix;
+uniform mat4 uViewMatrix;
+uniform mat4 uModelMatrix;
+uniform mat4 uNormalMatrix;
 
 varying vec4 vertexPosition;
 varying vec3 normal;
 
 void main() {
-    normal = normalize(vec3(vsNormalMatrix * vec4(vsNormal, 1.0)));
-    vertexPosition = vsModelMatrix * vec4(vsPosition, 1.0);
-    gl_Position = vsProjectionMatrix * vsViewMatrix * vertexPosition;
+    normal = vec3(uNormalMatrix * vec4(aNormal, 1.0));
+    vertexPosition = uModelMatrix * vec4(aPosition, 1.0);
+    gl_Position = uProjectionMatrix * uViewMatrix * vertexPosition;
 }
+
 `
 
 const fsSource = `
@@ -138,57 +139,107 @@ const fsSource = `
 precision mediump float;
 #endif
 
-uniform vec3 fsAmbientLight;
-uniform vec4 fsKa;
 
-uniform float lightFactor;
 uniform vec3 uPointLightingLocation;
+uniform vec3 uPointLightColor;
+
+uniform vec3 uDirectionalLightDirection;
+uniform vec3 uDirectionalLightColor;
+
+
+
+uniform vec3 uAmbientLightColor;
+
+uniform vec3 uKa;
+uniform vec3 uKd;
+uniform vec3 uKs;
+uniform float uNs;
+uniform float uAlpha;
 
 varying vec4 vertexPosition;
 varying vec3 normal;
 
-varying vec3 vLightWeighting;
-
 void main() {
+    vec3 vertexNormal = normalize(normal);
+    vec3 pointLightDirection = normalize(uPointLightingLocation - vertexPosition.xyz);
+    vec3 directionalLightDirection = normalize(uDirectionalLightDirection);
 
-    vec3 lightDirection = normalize(uPointLightingLocation - vertexPosition.xyz);
+    vec4 color = vec4(0.0, 0.0, 0.0, 0.0);
 
+    vec4 ambient = vec4(uAmbientLightColor*uKa, 1.0);
+    
+    color = color + ambient;
 
-    float pointLight = dot(normal, lightDirection);
-    vec3 ambient = fsAmbientLight * vec3(fsKa);
-    vec3 lightened = (ambient + pointLight) * lightFactor * fsKa.a;
-    gl_FragColor = vec4(lightened, fsKa.a);
+    float diffuseFactor = dot(-pointLightDirection, vertexNormal);
+    vec4 diffuse = vec4(0.0, 0.0, 0.0, 0.0);
+    if ( diffuseFactor > 0.0 ) {
+        diffuse = diffuseFactor*vec4(uPointLightColor*uKd, 1.0);
+    }  
+    color = color + diffuse;
+    
+    diffuseFactor = dot(-directionalLightDirection, vertexNormal);
+    diffuse = vec4(0.0, 0.0, 0.0, 0.0);
+    if ( diffuseFactor > 0.0 ) {
+        diffuse = diffuseFactor*vec4(uDirectionalLightColor*uKd, 1.0);
+    } 
+    color = color + diffuse;
+
+    vec3 cameraPos = uPointLightingLocation;
+
+    vec4 specular = vec4(0.0, 0.0, 0.0, 1.0);
+    vec3 reflectLightDir = reflect(pointLightDirection, vertexNormal);  
+    reflectLightDir= normalize(reflectLightDir);  
+    vec3 vertexToCamera = cameraPos - vertexPosition.xyz;  
+    vertexToCamera= normalize(vertexToCamera);  
+    float specularFactor = dot(vertexToCamera, reflectLightDir);
+    if (specularFactor > 0.0) {
+        specularFactor = pow(specularFactor, uNs);
+        specular = specularFactor*vec4(uPointLightColor, 1.0)*vec4(uKs, 1.0);
+    }
+    color = color + specular;
+
+    specular = vec4(0.0, 0.0, 0.0, 1.0);
+    reflectLightDir = reflect(directionalLightDirection, vertexNormal);
+    reflectLightDir= normalize(reflectLightDir);  
+    specularFactor = dot(vertexToCamera, reflectLightDir);
+    if (specularFactor > 0.0) {
+        specularFactor = pow (specularFactor, uNs);
+        specular = specularFactor*vec4(uDirectionalLightColor, 1.0)*vec4(uKs, 1.0);
+    }
+    color = color + specular;
+    gl_FragColor = vec4(color.xyz, uAlpha);
 }
+
 `
 const textureFsSource = `
 #ifdef GL_ES
 precision mediump float;
 #endif
 
-uniform vec4 fsKa;
+uniform vec4 uKa;
 
-uniform sampler2D fsSampler;
+uniform sampler2D uSampler;
 
 varying vec2 texCoord;
 
 void main() {
-    vec4 tempColor = texture2D(fsSampler, texCoord);
-    gl_FragColor = tempColor*fsKa;
+    vec4 tempColor = texture2D(uSampler, texCoord);
+    gl_FragColor = tempColor*uKa;
 }
 
 `
 const textureVsSource = `
-attribute vec3 vsPosition;
-attribute vec2 vsTexCoord;
+attribute vec3 aPosition;
+attribute vec2 aTexCoord;
 
-uniform mat4 vsMvpMatrix;
+uniform mat4 uMvpMatrix;
 
 varying vec2 texCoord;
 
 void main() {
-    gl_Position = vsMvpMatrix * vec4(vsPosition, 1.0);
+    gl_Position = uMvpMatrix * vec4(aPosition, 1.0);
 
-    texCoord = vsTexCoord;
+    texCoord = aTexCoord;
 
 }
 `
@@ -291,25 +342,33 @@ function Scene(_canvas) {
 
         gl.useProgram(this.shaderProgram)
 
-        gl.uniformMatrix4fv(this.vsViewMatrix, false, viewMatrix.elements)
-        gl.uniformMatrix4fv(this.vsProjectionMatrix, false, projectionMatrix.elements)
-        gl.uniform3f(this.uPointLightingLocation, currentUser.pos.x + currentUser.radius *2, currentUser.pos.y + currentUser.radius*2, currentUser.pos.z + currentUser.radius*2)
-        gl.uniform1f(this.lightFactor, lightIndensity)
+
+        let uPointLightingLocation = gl.getUniformLocation(this.shaderProgram, "uPointLightingLocation");
+        let uPointLightColor = gl.getUniformLocation(this.shaderProgram, "uPointLightColor");
+        let uDirectionalLightDirection = gl.getUniformLocation(this.shaderProgram, "uDirectionalLightDirection");
+        let uDirectionalLightColor = gl.getUniformLocation(this.shaderProgram, "uDirectionalLightColor");
+        let uAmbientLightColor = gl.getUniformLocation(this.shaderProgram, "uAmbientLightColor");
+
+        gl.uniform3f(uPointLightingLocation, currentUser.pos.x + currentUser.radius *2, currentUser.pos.y + currentUser.radius*2, currentUser.pos.z + currentUser.radius*2)
+        gl.uniform3f(uPointLightColor, 0.4, 0.4, 0.4);
+        gl.uniform3f(uDirectionalLightDirection, 0.8, 0.8, 0.8);
+        gl.uniform3f(uDirectionalLightColor, 0.4, 0.4, 0.4);
+        gl.uniform3f(uAmbientLightColor, 0.4, 0.4, 0.4);
 
 
         gl.useProgram(this.objShaderProgram);
 
-        let uPointLightingLocationObj = gl.getUniformLocation(this.objShaderProgram, "uPointLightingLocation");
-        let uPointLightColorObj = gl.getUniformLocation(this.objShaderProgram, "uPointLightColor");
-        let uDirectionalLightDirectionObj = gl.getUniformLocation(this.objShaderProgram, "uDirectionalLightDirection");
-        let uDirectionalLightColorObj = gl.getUniformLocation(this.objShaderProgram, "uDirectionalLightColor");
-        let uAmbientLightColorObj = gl.getUniformLocation(this.objShaderProgram, "uAmbientLightColor");
+        uPointLightingLocation = gl.getUniformLocation(this.objShaderProgram, "uPointLightingLocation");
+        uPointLightColor = gl.getUniformLocation(this.objShaderProgram, "uPointLightColor");
+        uDirectionalLightDirection = gl.getUniformLocation(this.objShaderProgram, "uDirectionalLightDirection");
+        uDirectionalLightColor = gl.getUniformLocation(this.objShaderProgram, "uDirectionalLightColor");
+        uAmbientLightColor = gl.getUniformLocation(this.objShaderProgram, "uAmbientLightColor");
 
-        gl.uniform3f(uPointLightingLocationObj, currentUser.pos.x + currentUser.radius *2, currentUser.pos.y + currentUser.radius*2, currentUser.pos.z + currentUser.radius*2)
-        gl.uniform3f(uPointLightColorObj, 0.0, 0.0, 0.0);
-        gl.uniform3f(uDirectionalLightDirectionObj, 0.8, 0.8, 0.8);
-        gl.uniform3f(uDirectionalLightColorObj, 0.8, 0.8, 0.8);
-        gl.uniform3f(uAmbientLightColorObj, 0.2, 0.2, 0.2);
+        gl.uniform3f(uPointLightingLocation, currentUser.pos.x + currentUser.radius *2, currentUser.pos.y + currentUser.radius*2, currentUser.pos.z + currentUser.radius*2)
+        gl.uniform3f(uPointLightColor, 0.4, 0.4, 0.4);
+        gl.uniform3f(uDirectionalLightDirection, 0.8, 0.8, 0.8);
+        gl.uniform3f(uDirectionalLightColor, 0.4, 0.4, 0.4);
+        gl.uniform3f(uAmbientLightColor, 0.4, 0.4, 0.4);
 
 
         this.rock.draw(viewMatrix, projectionMatrix);
@@ -319,13 +378,13 @@ function Scene(_canvas) {
         for (let i = 0; i != foods.length; ++i) {
             this.foodBalls[i].draw(viewMatrix, projectionMatrix)
         }
-        gl.depthMask(true);
+        //gl.depthMask(true);
         for (var i = 0; i != users.length; ++i) {
             this.userBalls[i].draw(viewMatrix, projectionMatrix)
         }
 
 
-        gl.depthMask(true);
+        //gl.depthMask(true);
 
 
     }
@@ -371,7 +430,6 @@ function Scene(_canvas) {
 
     this.textureBorder = new TextureBorder(20, './scripts/resources/background.jpg', gl, this.textureShaderProgram)
     this.userBalls = []
-    this.rocks = [];
     this.rock = new ObjObject('./scripts/resources/stone.obj', gl, this.objShaderProgram);
     this.foodBalls = []
 
