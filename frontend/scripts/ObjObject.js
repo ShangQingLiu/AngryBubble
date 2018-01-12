@@ -26,7 +26,7 @@ function ObjObject(filePath, _gl, _shaderProgram) {
   this.originalCenter = []
   this.radius = 1.0
   this.position = [1.0, 1.0, 1.0]
-  this.basicScaleMatrix = new Matrix4()
+  this.basicModelMatrix = new Matrix4()
 
   this.modelMatrix = new Matrix4()
   this.modelMatrix.setRotate(270, 1, 0, 0)
@@ -44,13 +44,16 @@ function ObjObject(filePath, _gl, _shaderProgram) {
 
     modelMatrix.setIdentity()
 
-    modelMatrix.translate(this.position[0], this.position[1], this.position[2])
+    let tempTranslateMatrix =  new Matrix4();
+    tempTranslateMatrix.setTranslate(this.position[0], this.position[1], this.position[2]);
 
-    modelMatrix.scale(this.radius, this.radius, this.radius)
+    let tempScaleMatrix = new Matrix4();
+    tempScaleMatrix.setScale(this.radius * 2, this.radius * 2, this.radius * 2);
 
-    modelMatrix.translate(-this.originalCenter[0], -this.originalCenter[1], -this.originalCenter[2])
+    modelMatrix.multiply(tempTranslateMatrix);
+    modelMatrix.multiply(tempScaleMatrix);
+    modelMatrix.multiply(this.basicModelMatrix);
 
-    modelMatrix.multiply(this.basicScaleMatrix)
     gl.uniformMatrix4fv(this.uModelMatrix, false, modelMatrix.elements)
     gl.uniformMatrix4fv(this.uViewMatrix, false, viewMatrix.elements)
     gl.uniformMatrix4fv(this.uProjectionMatrix, false, projectionMatrix.elements)
@@ -187,14 +190,20 @@ function ObjObject(filePath, _gl, _shaderProgram) {
     break
   }
 
-  let detaX = maxX - minX, detaY = maxY - minY, detaZ = maxZ - minZ
+  let detaX = maxX - minX, detaY = maxY - minY, detaZ = maxZ - minZ;
+  console.log(detaX, detaY, detaZ);
+  // let deta = detaX < detaY ? (detaX < detaZ ? detaX : detaZ) : (detaY < detaZ ? detaY : detaZ)
 
-  let deta = detaX < detaY ? (detaX < detaZ ? detaX : detaZ) : (detaY < detaZ ? detaY : detaZ)
+  let originalCenter = [(maxX + minX) / 2 , (maxY + minY) / 2 , (maxZ + minZ) / 2 ];
 
-  this.originalCenter = [(maxX + minX) / 2 * deta / detaX, (maxY + minY) / 2 * deta / detaY, (maxZ + minZ) / 2 * deta / detaZ]
-  //this.originalRadius = deta;
-  this.basicScaleMatrix.scale(1 / deta, 1 / deta, 1 / deta)
-  this.basicScaleMatrix.scale(deta / detaX, deta / detaY, deta / detaZ)
+  let basicScaleMatrix = new Matrix4();
+  let basicTranslateMatrix = new Matrix4();
+  basicScaleMatrix.setScale(1/detaX, 1/detaY, 1/detaZ);
+  basicTranslateMatrix.setTranslate(-originalCenter[0], -originalCenter[1], -originalCenter[2]);
+
+  this.basicModelMatrix.setIdentity();
+  this.basicModelMatrix.multiply(basicScaleMatrix);
+  this.basicModelMatrix.multiply(basicTranslateMatrix);
 
   var isUseTexture = coordsBuffer.length != 0
   var isGiveNormal = normalBuffer.length != 0
