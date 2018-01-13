@@ -917,6 +917,12 @@ function Merching(GL, shaderProgram) {
                     myfaces.push(vertices[ face.c ][2]) ;
 
                 }
+                else
+                {
+                    for(var i = 0; i!=9;i++){
+                        myfaces.push(0);
+                    }
+                }
 
             }
 
@@ -970,6 +976,7 @@ function Merching(GL, shaderProgram) {
 
     this.setUserColor = function () {
         this.color = [1.0, 1.0, 0.0, 0.2];
+        this.alpha = 0.2;
     };
 
     this.setPosition = function (x, y, z) {

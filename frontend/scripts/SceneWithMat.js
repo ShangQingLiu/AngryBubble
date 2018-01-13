@@ -403,6 +403,7 @@ function Scene(_canvas) {
 
                     merching.connectBall(user1.radius, user1.pos, user2.radius, user2.pos,base, range )
                     console.log("draw merching")
+                    merching.setUserColor()
                     merching.draw(viewMatrix, projectionMatrix)
                     console.log(merching);
                     shouldDrawBalls[i] = false;

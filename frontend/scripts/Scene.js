@@ -299,7 +299,7 @@ function Scene(_canvas) {
     gl.enable(gl.DEPTH_TEST)
     gl.enable(gl.BLEND)
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-    if (users.length > this.userBalls.length) {
+    if (users.length > this.userBalls.length || foods.length > this.foodBalls.length) {
       let deta = foods.length - this.foodBalls.length
       for (let i = 0; i != deta; ++i) {
         this.foodBalls.push(new Ball(this.gl, this.shaderProgram, 4))

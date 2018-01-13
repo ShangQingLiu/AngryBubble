@@ -4,38 +4,38 @@ const http = require('http').Server(app)
 const io = require('socket.io')(http)
 const path = require('path')
 const config = require('./config.json')
-const stone = [
+const stone = [ // todo: need sync between frontend and backend
   {
     pos: {
-      x: 2,
-      y: 7,
-      z: 3
+      x: -7,
+      y: -2,
+      z: -18
     },
-    radius: 0.3
+    radius: 2.5
   },
   {
     pos: {
-      x: 4,
-      y: 5,
-      z: 4
+      x: 16,
+      y: -19,
+      z: 15
     },
-    radius: 0.3
+    radius: 6.4
   },
   {
     pos: {
-      x: 1,
-      y: 5,
-      z: 8
+      x: -21,
+      y: -29,
+      z: 25
     },
-    radius: 0.3
+    radius: 5
   },
   {
     pos: {
       x: 3,
-      y: 2,
+      y: 7,
       z: 9
     },
-    radius: 0.3
+    radius: 2.0
   }
 ]
 
@@ -63,9 +63,9 @@ io.on('connection', socket => {
       id: socket.id,
       name: name,
       pos: {
-        x: Math.random(),
-        y: Math.random(),
-        z: Math.random()
+        x: Math.random() * 3,
+        y: Math.random() * 3,
+        z: Math.random() * 3
       },
       radius: config.initSize
     }
@@ -105,6 +105,18 @@ io.on('connection', socket => {
       users: users,
       foods: foods
     })
+  })
+
+  socket.on('collision', user => {
+    let index = users.findIndex((val) => val.id === user.id)
+    if (index !== -1) {
+      users.splice(index, 1)
+      console.log(users)
+      io.emit('update', {
+        users: users,
+        foods: foods
+      })
+    }
   })
 
   socket.on('eat food', args => {

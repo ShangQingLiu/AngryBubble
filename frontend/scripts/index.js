@@ -13,6 +13,7 @@ const config = {
 }
 let users = []
 let foods = []
+let isEntered = false
 const stone = [ // todo: need sync between frontend and backend
   {
     pos: {
@@ -21,14 +22,6 @@ const stone = [ // todo: need sync between frontend and backend
       z: -18
     },
     radius: 2.5
-  },
-  {
-    pos: {
-      x: -32,
-      y: -27,
-      z: -13
-    },
-    radius: 5
   },
   {
     pos: {
@@ -45,22 +38,6 @@ const stone = [ // todo: need sync between frontend and backend
       z: 25
     },
     radius: 5
-  },
-  {
-    pos: {
-      x: 32,
-      y: 27,
-      z: -33
-    },
-    radius: 5
-  },
-  {
-    pos: {
-      x: 17,
-      y: 39,
-      z: 35
-    },
-    radius: 7.4
   },
   {
     pos: {
@@ -116,18 +93,20 @@ socket.on('welcome', init)
 socket.on('update', update)
 
 function onKeyDown(event) {
+  // if (currentUser === undefined)
+  //   return
   console.log('key: ' + event.key)
   const tmpUser = JSON.parse(JSON.stringify(currentUser))
   switch (event.key) {
     case 'w':
       tmpUser.pos = nextPositionToward(config.moveBaseStep / currentUser.radius)
-      if (checkCollision(tmpUser))
-        currentUser.pos = nextPositionToward(-config.collisionBounce)
+      // if (checkCollision(tmpUser))
+      //   currentUser.pos = nextPositionToward(-config.collisionBounce)
       break
     case 's':
       tmpUser.pos = nextPositionToward(-config.moveBaseStep / currentUser.radius)
-      if (checkCollision(tmpUser))
-        currentUser.pos = nextPositionToward(config.collisionBounce)
+      // if (checkCollision(tmpUser))
+      //   currentUser.pos = nextPositionToward(config.collisionBounce)
       break
     case 'a':
       break
@@ -141,6 +120,9 @@ function onKeyDown(event) {
     socket.emit('move', tmpUser)
     checkFoods(tmpUser)
     checkUsers(tmpUser)
+  } else {
+    socket.emit('collision', tmpUser)
+    $('#modal1').modal('open')
   }
   // console.log(tmpUser)
 }
@@ -151,8 +133,10 @@ function init(args) {
   foods = args.foods
   console.log(foods)
   let index
-  if ((index = users.findIndex((val) => val.id === socket.id)) !== -1)
+  if ((index = users.findIndex((val) => val.id === socket.id)) !== -1) {
     currentUser = users[index]
+    isEntered = true
+  }
   console.log(currentUser)
   animate()
 }
@@ -165,7 +149,7 @@ function update(args) {
   if ((index = users.findIndex((val) => val.id === socket.id)) !== -1) {
     currentUser = users[index]
   }
-  else {
+  else if (isEntered) {
     console.log('you\'ve been eaten')
     // window.alert('you\'ve been eaten')
     $('#modal1').modal('open')
