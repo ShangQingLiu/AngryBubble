@@ -7,6 +7,8 @@ let myfaces = [];
 
 
 
+
+
 function Merching(GL, shaderProgram) {
     this.gl = GL
 
@@ -917,11 +919,45 @@ function Merching(GL, shaderProgram) {
                     myfaces.push(vertices[ face.c ][2]) ;
 
                 }
-                else
-                {
-                    for(var i = 0; i!=9;i++){
-                        myfaces.push(0);
-                    }
+
+                else{
+                    if(vertices[ face.a ][0]!=null )
+                    myfaces.push(vertices[ face.a ][0]) ;
+                    else
+                        myfaces.push(0) ;
+                    if(vertices[ face.a ][1]!=null )
+                    myfaces.push(vertices[ face.a ][1]) ;
+                    else
+                        myfaces.push(0) ;
+                    if(vertices[ face.a ][2]!=null )
+                    myfaces.push(vertices[ face.a ][2]) ;
+                    else
+                        myfaces.push(0) ;
+                    if(vertices[ face.b ][0]!=null )
+                    myfaces.push(vertices[ face.b ][0]) ;
+                    else
+                        myfaces.push(0) ;
+                    if(vertices[ face.b ][1]!=null )
+                    myfaces.push(vertices[ face.b ][1]) ;
+                    else
+                        myfaces.push(0) ;
+                    if(vertices[ face.b ][2]!=null )
+                    myfaces.push(vertices[ face.b ][2]) ;
+                    else
+                        myfaces.push(0) ;
+                    if(vertices[ face.c ][0]!=null )
+                    myfaces.push(vertices[ face.c ][0]) ;
+                    else
+                        myfaces.push(0) ;
+                    if(vertices[ face.c ][1]!=null )
+                    myfaces.push(vertices[ face.c ][1]) ;
+                    else
+                        myfaces.push(0) ;
+                    if(vertices[ face.c ][2]!=null )
+                    myfaces.push(vertices[ face.c ][2]) ;
+                    else
+                        myfaces.push(0) ;
+
                 }
 
             }
