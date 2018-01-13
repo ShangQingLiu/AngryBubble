@@ -400,7 +400,7 @@ function Scene(_canvas) {
                     let merching = new Merching(gl, this.shaderProgram);
 
                     let base = getBase(user1.pos, user2.pos, range);
-
+                    console.log(range, base)
                     merching.connectBall(user1.radius, user1.pos, user2.radius, user2.pos,base, range )
                     console.log("draw merching")
                     merching.draw(viewMatrix, projectionMatrix)
