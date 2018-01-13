@@ -921,43 +921,35 @@ function Merching(GL, shaderProgram) {
                 }
 
                 else{
-                    if(vertices[ face.a ][0]!=null )
-                    myfaces.push(vertices[ face.a ][0]) ;
-                    else
+                    if(vertices[ face.a ]!=undefined ) {
+                        myfaces.push(vertices[face.a][0]);
+                        myfaces.push(vertices[face.a][1]);
+                        myfaces.push(vertices[face.a][2]);
+                    }
+                    else{
                         myfaces.push(0) ;
-                    if(vertices[ face.a ][1]!=null )
-                    myfaces.push(vertices[ face.a ][1]) ;
-                    else
                         myfaces.push(0) ;
-                    if(vertices[ face.a ][2]!=null )
-                    myfaces.push(vertices[ face.a ][2]) ;
-                    else
                         myfaces.push(0) ;
-                    if(vertices[ face.b ][0]!=null )
-                    myfaces.push(vertices[ face.b ][0]) ;
-                    else
+                    }
+                    if(vertices[ face.b ]!=undefined ) {
+                        myfaces.push(vertices[face.b][0]);
+                        myfaces.push(vertices[face.b][1]);
+                        myfaces.push(vertices[face.b][2]);
+                    }
+                    else{
                         myfaces.push(0) ;
-                    if(vertices[ face.b ][1]!=null )
-                    myfaces.push(vertices[ face.b ][1]) ;
-                    else
                         myfaces.push(0) ;
-                    if(vertices[ face.b ][2]!=null )
-                    myfaces.push(vertices[ face.b ][2]) ;
-                    else
                         myfaces.push(0) ;
-                    if(vertices[ face.c ][0]!=null )
-                    myfaces.push(vertices[ face.c ][0]) ;
-                    else
+                    } if(vertices[ face.c ]!=undefined ) {
+                        myfaces.push(vertices[face.c][0]);
+                        myfaces.push(vertices[face.c][1]);
+                        myfaces.push(vertices[face.c][2]);
+                    }
+                    else{
                         myfaces.push(0) ;
-                    if(vertices[ face.c ][1]!=null )
-                    myfaces.push(vertices[ face.c ][1]) ;
-                    else
                         myfaces.push(0) ;
-                    if(vertices[ face.c ][2]!=null )
-                    myfaces.push(vertices[ face.c ][2]) ;
-                    else
                         myfaces.push(0) ;
-
+                    }
                 }
 
             }
